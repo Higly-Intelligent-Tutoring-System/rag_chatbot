@@ -1,0 +1,15 @@
+[project]
+name = "document_loader"
+version = "0.1.0"
+description = "Loads documents inside of the target VectorDB"
+authors = [{ name = "Valerio Conti", email = "conti.valerio@proton.me" }]
+dependencies = [
+    "requests",
+    "bs4",
+    "urllib3",
+    "core",
+    "langchain-community>=0.4.1",
+    "pypdf>=6.6.2",
+    "langchain-huggingface>=1.2.0",
+]
+

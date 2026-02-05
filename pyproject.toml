@@ -1,0 +1,18 @@
+[project]
+name = "rag-chatbot"
+version = "0.1.0"
+description = "Monorepositoy containing both the RAG pipeline to transform documents into embeddings and the API backend"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "langchain>=1.2.8",
+    "python-dotenv>=1.2.1",
+]
+
+[tool.uv.sources]
+document_loader = { workspace = true }
+rag_api = { workspace = true }
+core = { workspace = true }
+
+[tool.uv.workspace]
+members = ["packages/*"]

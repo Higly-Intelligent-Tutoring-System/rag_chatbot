@@ -1,0 +1,9 @@
+[project]
+name = "rag_api"
+version = "0.1.0"
+description = "FastAPI service that powers the rag chatbot"
+authors = [{ name = "Valerio Conti", email = "conti.valerio@proton.me" }]
+dependencies = [
+    "fastapi",
+    "uvicorn"
+    ]
