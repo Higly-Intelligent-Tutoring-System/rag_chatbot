@@ -9,10 +9,5 @@ dependencies = [
     "python-dotenv>=1.2.1",
 ]
 
-[tool.uv.sources]
-document_loader = { workspace = true }
-rag_api = { workspace = true }
-core = { workspace = true }
-
 [tool.uv.workspace]
 members = ["packages/*"]
