@@ -1,11 +1,10 @@
 import sys
 import os
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from dotenv import load_dotenv
-from sources.web import crawl_website
+from loader.config import *
+from loader.sources.web import crawl_website
 from core import get_vector_store
 
-load_dotenv()
 
 def process_and_store(documents):
     if not documents:
@@ -15,7 +14,7 @@ def process_and_store(documents):
     print(f"📚 Processing {len(documents)} raw documents...")
 
     # 1. Split
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=int(os.getenv("CHUNK_SIZE")), chunk_overlap=int(os.getenv("CHUNK_OVERLAP")))
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP)
     chunks = text_splitter.split_documents(documents) 
     print(f"🧩 Created {len(chunks)} chunks.") 
 
@@ -40,7 +39,7 @@ def main():
 
     match mode:
         case "web":
-            docs = crawl_website(base_url=target, max_pages=int(os.getenv("MAX_PAGES_RECURSION")))
+            docs = crawl_website(base_url=target, max_pages=MAX_PAGES_RECURSION)
         case _:
             print("Unknown mode. Use 'web'.")
 
