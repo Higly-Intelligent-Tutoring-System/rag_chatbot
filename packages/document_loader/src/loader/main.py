@@ -40,7 +40,7 @@ def main():
 
     match mode:
         case "web":
-            docs = crawl_website(base_url=target, max_pages=5)
+            docs = crawl_website(base_url=target, max_pages=int(os.getenv("MAX_PAGES_RECURSION")))
         case _:
             print("Unknown mode. Use 'web'.")
 

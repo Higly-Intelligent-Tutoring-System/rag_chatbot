@@ -3,6 +3,18 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 from langchain_core.documents import Document
 
+
+def clean_webpage(soup):
+    """Remove the header and footer elements"""
+    for header in soup.find_all('header'):
+        header.decompose()
+    
+    for footer in soup.find_all('footer'):
+        footer.decompose()
+
+    return soup
+
+
 def crawl_website(base_url: str, max_pages: int = 50) -> list[Document]:
     """Recursively crawl and extract text from a website."""
     visited = set()
@@ -22,7 +34,7 @@ def crawl_website(base_url: str, max_pages: int = 50) -> list[Document]:
             if "text/html" not in response.headers.get("content-type", ""):
                 continue
             
-            soup = BeautifulSoup(response.text, "html.parser").main
+            soup = clean_webpage(BeautifulSoup(response.text, "html.parser"))
             
             # Simple extraction strategy
             text = ' '.join(p.get_text() for p in soup.find_all(['p', 'li', 'h1', 'h2', 'h3']))
