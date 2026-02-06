@@ -5,14 +5,15 @@ from langchain_chroma import Chroma
 from langchain_community.vectorstores import SupabaseVectorStore
 from supabase import create_client
 
-from .embeddings import get_embeddings_model
+from core.config import VECTOR_DB_TYPE
+from core.embeddings import get_embeddings_model
 
 def get_vector_store(collection_name: str = "documents") -> VectorStore:
     """
     Factory function to return the configured VectorStore.
     Controls VecDB implementation via environment variables.
     """
-    db_type = os.getenv("VECTOR_DB_TYPE", "chroma_local").lower()
+    db_type = (VECTOR_DB_TYPE if VECTOR_DB_TYPE else "chroma_local").lower()
     embeddings = get_embeddings_model()
 
     match db_type:
