@@ -3,6 +3,7 @@ import os
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from loader.config import *
 from loader.sources.web import crawl_website
+from loader.sources.pdf import load_pdf
 from core import get_vector_store
 
 
@@ -30,7 +31,7 @@ def process_and_store(documents):
 def main():
     # Simple CLI arguments to choose mode 
     if len(sys.argv) < 2:
-        print("Usage: python main.py [web] [target]")
+        print("Usage: python main.py [ web | pdf ] [target]")
         return 
 
     mode = sys.argv[1]
@@ -40,6 +41,8 @@ def main():
     match mode:
         case "web":
             docs = crawl_website(base_url=target, max_pages=MAX_PAGES_RECURSION)
+        case "pdf":
+            docs = load_pdf(filepath=target)
         case _:
             print("Unknown mode. Use 'web'.")
 

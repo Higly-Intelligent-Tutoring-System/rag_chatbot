@@ -208,3 +208,6 @@ __marimo__/
 
 # Chroma local
 chroma_db_data/
+
+# PDFs folder
+pdf_docs/

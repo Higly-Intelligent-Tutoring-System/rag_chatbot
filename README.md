@@ -69,7 +69,7 @@ A Command Line Interface (CLI) tool responsible for populating the Vector Databa
 
 *   **Features**:
     *   Recursive Web Crawling.
-    *   PDF Text Extraction. (TBI)
+    *   PDF Text Extraction.
     *   Smart Chunking (rules defined in `core`).
 
 *   **Usage**:
