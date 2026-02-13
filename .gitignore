@@ -209,8 +209,15 @@ __marimo__/
 # Chroma local
 chroma_db_data/
 
-# PDFs folder
-pdf_docs/
-
 # Model cache
 model_cache/
+
+# Ignore actual PDF binaries to keep repo small
+data/pdf_docs/*.pdf
+
+# Ignore the URL list if it contains private links
+data/urls.txt
+!data/urls.txt.example
+
+# Keep the directory structure even if empty
+!data/pdf_docs/.gitkeep

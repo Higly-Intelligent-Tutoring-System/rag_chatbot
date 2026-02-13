@@ -16,8 +16,30 @@ It relies on the `core` package for database connections and embedding models.
 Run the loader from the **root** of the monorepo using `uv`.
 
 ### Syntax
+
+To analyze a single source use the following command:
 ```bash
-uv run --package document_loader python -m loader.main [MODE] [TARGET]
+uv run --package document_loader python -m loader.main [MODE] "[TARGET]"
+```
+
+## 📦 Batch Data Ingestion
+
+The loader supports batch processing to ingest multiple resources in a single run.
+
+### 1. Prepare your Data
+Ensure your project root contains a `data` folder with the following structure:
+
+```text
+rag-monorepo/
+├── data/
+│   ├── urls.txt          # List of URLs (one per line)
+│   └── pdf_docs/         # Folder containing .pdf files
+```
+
+Put in the file a url to parse recursively for each line and all the desired pdfs in the folder, then execute the following command:
+
+```bash
+uv run --package document_loader python -m loader.batch
 ```
 
 ## 🏗️ Architecture

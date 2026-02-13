@@ -71,6 +71,7 @@ A Command Line Interface (CLI) tool responsible for populating the Vector Databa
     *   Recursive Web Crawling.
     *   PDF Text Extraction.
     *   Smart Chunking (rules defined in `core`).
+    *   Batch processing.
 
 *   **Usage**:
     ```bash
@@ -80,6 +81,8 @@ A Command Line Interface (CLI) tool responsible for populating the Vector Databa
     # Load a PDF
     uv run --package document-loader python -m loader.main pdf "./docs/manual.pdf"
     ```
+
+    Check document_loader's `README.md` to know how to enable batch processing.
 
 ### 3. 🚧 RAG API (`packages/rag-api`)
 *Status: Under Construction*
