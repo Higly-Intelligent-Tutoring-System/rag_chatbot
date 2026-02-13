@@ -44,14 +44,14 @@ def crawl_website(base_url: str, max_pages: int = 50) -> list[Document]:
                     page_content=text, 
                     metadata={"source": url, "type": "web"}
                 ))
-            
-            print(f"\nSuccessfully parsed {url}")
 
             # Find links
             for link_tag in soup.find_all("a", href=True):
                 link = urljoin(url, link_tag['href'])
                 if link.startswith(base_url) and link not in visited:
                     to_visit.append(link)
+
+            print(f"✅ Successfully parsed {url}")
                     
         except Exception as e:
             print(f"⚠️ Error fetching {url}: {e}")
