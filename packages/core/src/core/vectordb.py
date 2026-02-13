@@ -16,6 +16,8 @@ def get_vector_store(collection_name: str = "documents") -> VectorStore:
     db_type = (VECTOR_DB_TYPE if VECTOR_DB_TYPE else "chroma_local").lower()
     embeddings = get_embeddings_model()
 
+    print(f"✅ Embedding model loaded succsessfully!")
+
     match db_type:
         case "supabase":
             url = os.getenv("SUPABASE_URL")
