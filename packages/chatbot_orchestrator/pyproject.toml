@@ -1,0 +1,16 @@
+[project]
+name = "chatbot-orchestration"
+version = "0.1.0"
+description = "RAG orchestration layer for the HITS Chatbot."
+authors = [{ name = "HITS Project Team" }]
+requires-python = ">=3.13"
+dependencies = [
+    "core",
+]
+
+[tool.uv]
+package = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
