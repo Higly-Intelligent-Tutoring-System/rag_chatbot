@@ -221,3 +221,6 @@ data/urls.txt
 
 # Keep the directory structure even if empty
 !data/pdf_docs/.gitkeep
+
+# VSCode tmp files
+.vscode

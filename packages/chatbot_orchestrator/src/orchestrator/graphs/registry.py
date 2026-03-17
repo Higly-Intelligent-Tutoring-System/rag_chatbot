@@ -5,6 +5,7 @@ Keeps rag-api from importing concrete graph classes directly.
 from __future__ import annotations
 
 from .base import GraphBuilder
+from .rag_graph import RAGGraph
 
 # ── Registry ────────────────────────────────────────────
 _REGISTRY: dict[str, GraphBuilder] = {}
@@ -15,8 +16,7 @@ def _register(builder: GraphBuilder) -> None:
 
 
 # Register all graphs at import time
-# _register(SimpleChatGraph())
-# _register(RAGGraph())
+_register(RAGGraph())
 
 
 def get_graph_builder(name: str) -> GraphBuilder:

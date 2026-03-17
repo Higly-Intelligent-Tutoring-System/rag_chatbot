@@ -11,15 +11,15 @@ from langchain_core.vectorstores import VectorStore
     
 #     return docs_content
 
-async def build_retrieval_node(retriever):
+
+# IMPORTANT: It has to be sync because if not it will return a coroutine, not a callable.
+def build_retrieval_node(retriever):
 
     async def retrieve(state):
         question = state["messages"][-1].content
-
         docs = await retriever.ainvoke(question)
-
         return {
-            "documents": [doc.page_content for doc in docs]
+            "documents": docs
         }
 
     return retrieve

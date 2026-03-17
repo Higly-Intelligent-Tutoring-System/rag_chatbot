@@ -1,4 +1,4 @@
-from .retrival import build_retrieval_node
+from .retrieval import build_retrieval_node
 from .generation import build_generation_node
 
 all = [

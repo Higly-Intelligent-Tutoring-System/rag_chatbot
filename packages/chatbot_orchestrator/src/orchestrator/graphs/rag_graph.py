@@ -4,10 +4,10 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.retrievers import BaseRetriever
 from langgraph.graph import StateGraph, START, END
 
-from orchestrator.schemas.schemas import RAGState
+from orchestrator.schemas.schemas import RagState
 from orchestrator.nodes import *
 
-from orchestrator.prompts import get_rag_prompt
+from orchestrator.prompts.rag import get_rag_prompt
 
 
 class RAGGraph:
@@ -50,11 +50,11 @@ class RAGGraph:
         retrieve = build_retrieval_node(retriever=retriever)
         generate = build_generation_node(
             llm=self._llm,
-            system_prompt=get_rag_prompt(),
+            prompt=get_rag_prompt(),
         )
 
         # ── Assemble graph ──────────────────────────────
-        builder = StateGraph(RAGState)
+        builder = StateGraph(RagState)
 
         builder.add_node("retrieve", retrieve)
         builder.add_node("generate", generate)

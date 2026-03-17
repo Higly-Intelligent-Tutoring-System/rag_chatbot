@@ -1,5 +1,4 @@
 from typing import Callable
-from langgraph.graph import CompiledGraph
 
 
 class ChatService:
@@ -16,7 +15,6 @@ class ChatService:
         self.retriever = retriever
         self.checkpointer = checkpointer
         self.store = store
-        self._compiled_graph: CompiledGraph | None = None
 
     async def compile(self):
         builder = self.graph_builder(self.llm, self.retriever)

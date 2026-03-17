@@ -1,10 +1,18 @@
 from langchain_core.messages import AIMessage
+from langchain_core.language_models import BaseChatModel
+from langchain_core.prompts import ChatPromptTemplate
 
-
-def build_generation_node(llm, prompt):
+def build_generation_node(llm: BaseChatModel, prompt: ChatPromptTemplate):
 
     async def generate(state):
-        context = "\n\n".join(state.get("documents", []))
+        # Safe document loading
+        docs = state.get("documents") or []
+
+        # Prompt variable building
+        context = "\n\n".join(
+            f"Source: {doc.metadata.get('source', 'unknown')}\n{doc.page_content}"
+            for doc in docs
+        )
         question = state["messages"][-1].content
 
         formatted_messages = prompt.format_messages(

@@ -11,8 +11,8 @@ rag-monorepo/
 ├── packages/
 │   ├── core/                   # 🧠 Shared Library (Config, Database, Embeddings)
 │   ├── document-loader/        # 📥 CLI Tool for Data Ingestion (Web & PDF)
-│   ├── chatbot_orchestration/  # Application layer (RAG engine)
-│   └── rag-api/                # 🚧 FastAPI Backend (Chatbot Engine)
+│   ├── chatbot_orchestration/  # 🤖 Application layer (Chatbot engine)
+│   └── api/                    # ✉️ FastAPI Backend (Chatbot Engine)
 ├── pyproject.toml              # Workspace Definition
 ├── uv.lock                     # Unified Lockfile
 └── ...                         # Other Configuration and Documentation
@@ -85,7 +85,14 @@ A Command Line Interface (CLI) tool responsible for populating the Vector Databa
 
     Check document_loader's `README.md` to know how to enable batch processing.
 
-### 3. 🚧 RAG API (`packages/rag-api`)
+### 3. 🤖 Chatbot orchestrartor (`packages/chatbot_orchestrartor`)
+
+The application layer of the HITS RAG chatbot.
+
+This package contains the LangGraph-based conversational engine responsible for retrieval, generation, and conversation memory management. It is framework‑agnostic and designed to be consumed by the api package.
+
+
+### 4. ✉️ FastAPI Backend (`packages/api`)
 *Status: Under Construction*
 
 This package will contain the FastAPI application serving the Chatbot REST endpoints.
