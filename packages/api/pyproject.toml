@@ -5,5 +5,21 @@ description = "FastAPI service that powers the rag chatbot"
 authors = [{ name = "Valerio Conti", email = "conti.valerio@proton.me" }]
 dependencies = [
     "fastapi",
-    "uvicorn"
-    ]
+    "uvicorn",
+    "core",
+    "chatbot_orchestrator",
+    "arize-phoenix>=13.15.0",
+    "openinference-instrumentation-langchain>=0.1.61",
+    "pydantic>=2.12.5",
+    "langchain-ollama>=1.0.1",
+    "langchain-openai>=1.1.11",
+    "langchain-anthropic>=1.4.0",
+    "langchain-google-vertexai>=3.2.2",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/api"]
+
+[tool.uv.sources]
+core = { workspace = true }
+chatbot_orchestrator = { workspace = true }
