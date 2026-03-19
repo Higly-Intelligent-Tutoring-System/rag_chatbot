@@ -3,10 +3,10 @@ import os
 from pathlib import Path
 from langchain_core.documents import Document
 
-from loader.main import process_and_store
-from loader.sources.web import crawl_website
-from loader.sources.pdf import load_pdf
-from loader.config import MAX_PAGES_RECURSION, URL_PATH, PDF_PATH
+from .main import process_and_store
+from .sources.web import crawl_website
+from .sources.pdf import load_pdf
+from .config import document_loader_settings
 
 def run_web_batch(list_file_path) -> list[Document]:
     """Reads a text file of URLs and processes them one by one."""
@@ -26,7 +26,10 @@ def run_web_batch(list_file_path) -> list[Document]:
     for i, url in enumerate(urls, 1):
         print(f"\n--- [Web {i}/{len(urls)}] Processing: {url} ---")
         try:
-            docs += crawl_website(base_url=url, max_pages=MAX_PAGES_RECURSION)
+            docs += crawl_website(
+                base_url=url, 
+                max_pages=document_loader_settings.MAX_PAGES_RECURSION
+                )
         except Exception as e:
             print(f"⚠️ Failed to process URL {url}: {e}")
             # We continue to the next one, don't crash the whole batch
@@ -63,7 +66,10 @@ def run_pdf_batch(folder_path)  -> list[Document]:
 
 
 def main():
-    process_and_store(run_web_batch(URL_PATH) + run_pdf_batch(PDF_PATH))
+    process_and_store(
+        run_web_batch(document_loader_settings.URL_PATH) + 
+        run_pdf_batch(document_loader_settings.PDF_PATH)
+        )
 
 
 if __name__ == "__main__":

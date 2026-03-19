@@ -1,17 +1,17 @@
 from typing import Literal
 
-from .stores.postgres import get_checkpointer as get_postgres
-from .stores.in_memory import get_checkpointer as get_memory
+from .stores.postgres import get_store as get_postgres
+from .stores.in_memory import get_store as get_memory
 
 
-SaverType = Literal["postgres", "memory"]
+StoreType = Literal["postgres", "memory"]
 
 
-async def get_checkpointer(saver_type: SaverType = "memory"):
-    match saver_type:
+async def get_store(store_type: StoreType = "memory", db_uri: str | None = None):
+    match store_type:
         case "memory":
             return await get_memory()
         case "postgres":
-            return await get_postgres()
+            return await get_postgres(db_uri)
         case _:
-            raise ValueError(f"Unsupported saver type: {saver_type}")
+            raise ValueError(f"Unsupported saver type: {store_type}")
