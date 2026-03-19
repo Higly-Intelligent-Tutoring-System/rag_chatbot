@@ -1,11 +1,10 @@
 from langchain_huggingface import HuggingFaceEmbeddings
-from core.config import EMBEDDING, CACHE_FOLDER
-import os
+from .config import CoreSettings
 
-def get_embeddings_model():
+def get_embeddings_model(settings: CoreSettings):
     """Returns the configured embedding model for the whole ecosystem."""
     # Centralized model definition
     return HuggingFaceEmbeddings(
-        model_name=EMBEDDING,
-        cache_folder=CACHE_FOLDER
+        model_name=settings.EMBEDDING_MODEL_NAME,
+        cache_folder=settings.CACHE_FOLDER
     )

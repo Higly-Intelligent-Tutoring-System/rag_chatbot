@@ -135,7 +135,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+.env*
 .envrc
 .venv
 env/
@@ -224,3 +224,4 @@ data/urls.txt
 
 # VSCode tmp files
 .vscode
+.VSCodeCounter

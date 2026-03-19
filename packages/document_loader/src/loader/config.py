@@ -1,10 +1,16 @@
-# Splitting
-CHUNK_SIZE=1500
-CHUNK_OVERLAP=300
+from pydantic_settings import BaseSettings
+from core import CoreSettings
 
-# Web crawling
-MAX_PAGES_RECURSION=5
+class DocumentLoaderSettings(BaseSettings):
+    CHUNK_SIZE: int
+    CHUNK_OVERLAP: int
+    MAX_PAGES_RECURSION: int
+    URL_PATH: str
+    PDF_PATH: str
 
-# Batch mode paths
-URL_PATH="data/urls.txt"
-PDF_PATH="data/pdf_docs"
+    class Config:
+        env_prefix = "DOC_"
+        extra = "ignore"
+
+document_loader_settings = DocumentLoaderSettings()
+core_settings = CoreSettings()

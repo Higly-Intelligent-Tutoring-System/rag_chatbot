@@ -5,6 +5,7 @@ from loader.config import *
 from loader.sources.web import crawl_website
 from loader.sources.pdf import load_pdf
 from core import get_vector_store
+from .config import core_settings, document_loader_settings
 
 
 def process_and_store(documents):
@@ -15,12 +16,15 @@ def process_and_store(documents):
     print(f"📚 Processing {len(documents)} raw documents...")
 
     # 1. Split
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP)
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=document_loader_settings.CHUNK_SIZE, 
+        chunk_overlap=document_loader_settings.CHUNK_OVERLAP
+        )
     chunks = text_splitter.split_documents(documents) 
     print(f"🧩 Created {len(chunks)} chunks.") 
 
     # 2. Get DB (Abstracted by core) 
-    vector_store = get_vector_store(collection_name="chatbot_knowledge")
+    vector_store = get_vector_store(collection_name=core_settings.VECTOR_DB_COLLECTION)
     print(f"✅ Vector Database loaded succesfully!")
    
     #3. Store 
@@ -41,7 +45,10 @@ def main():
 
     match mode:
         case "web":
-            docs = crawl_website(base_url=target, max_pages=MAX_PAGES_RECURSION)
+            docs = crawl_website(
+                base_url=target, 
+                max_pages=document_loader_settings.MAX_PAGES_RECURSION
+                )
         case "pdf":
             docs = load_pdf(filepath=target)
         case _:
