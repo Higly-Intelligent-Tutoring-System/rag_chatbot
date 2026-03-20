@@ -1,38 +1,30 @@
-# api/wiring.py
-
 from langchain.chat_models import init_chat_model 
 
 from chatbot_orchestrator import ChatService
-# from chatbot_orchestration.graphs.rag_graph import build_rag_graph
-# from chatbot_orchestration.persistence.saver_factory import create_checkpointer
-# from chatbot_orchestration.persistence.store_factory import create_store
-
-from core import get_retriever
-
-from .config import settings
+from chatbot_orchestrator.graphs.registry import get_graph_builder 
+from chatbot_orchestrator.persistence.saver_factory import get_checkpointer
+from chatbot_orchestrator.persistence.store_factory import get_store
+from core import get_vector_store
+from .config import ApiSettings, CoreSettings
 
 
-async def build_chat_service() -> ChatService:
-    # LLM
+async def build_chat_service(
+        core_settings: CoreSettings, 
+        api_settings: ApiSettings
+        ) -> ChatService:
+    
     llm = init_chat_model(
-        model=settings.MODEL_NAME,
-        model_provider=settings.MODEL_PROVIDER,
-        temperature=0,
+        model=api_settings.MODEL_NAME,
+        model_provider=api_settings.PROVIDER_NAME,
+        temperature=api_settings.MODEL_TEMPERATURE,
     )
-
-    # Retriever
-    retriever = get_retriever()
-
-    # Conversation saver
-    checkpointer = None     # TODO: Create saver.
-
-    # Optional store
-    store = None
-    if settings.STORE_BACKEND:
-        store = None        # TODO: Create saver.
+    retriever = get_vector_store(core_settings)
+    checkpointer = get_checkpointer(api_settings.SAVER_BACKEND)
+    store = get_store(api_settings.STORER_BACKEND)
+    
     # Build service
     service = ChatService(
-        graph_builder=None, # TODO: Use graph builder.
+        graph_builder=get_graph_builder(api_settings.GRAPH_NAME),
         llm=llm,
         retriever=retriever,
         checkpointer=checkpointer,

@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel
 
-from orchestrator.service import ChatService
+from chatbot_orchestrator.service import ChatService
 
 
 # ── Dependency ──────────────────────────────────────────

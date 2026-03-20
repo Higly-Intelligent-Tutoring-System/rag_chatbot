@@ -1,17 +1,31 @@
 from pydantic_settings import BaseSettings
-from dotenv import load_dotenv
+from core import CoreSettings
 
-load_dotenv()
+class ApiSettings(BaseSettings):
+    GRAPH_NAME: str
+    MODEL_NAME: str
+    PROVIDER_NAME: str
+    MODEL_TEMPERATURE: float
+    AUTH_ENABLE: bool
 
-class Settings(BaseSettings):
-    # Orchestrator
-    graph_name: str = "BasicRagGraph"
-    persistence_backend: str = "memory"
+    PHOENIX_COLLECTOR_ENDPOINT: str
+    PHOENIX_PROJECT_NAME: str
 
-    # TODO: Add all of the necessary settings, such as:
-        # - The model name and provider (not the API keys, it will be loaded thorugh env).
-        # - The persistence_backend configurations (loaded here from env)
-        # - The telemetry parameters to load from ENV.
+    SAVER_BACKEND: str
+    STORER_BACKEND: str
 
+    POSTGRES_USERNAME: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_DOMAIN: str
+    POSTGRES_PORT: str
+    POSTGRES_SSL: str
 
-settings = Settings()
+    class Config:
+        env_prefix = "API_"
+        extra = "ignore"
+
+    def postgres_db_uri(self):
+        return f"postgresql://{self.POSTGRES_USERNAME}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_DOMAIN}:{self.POSTGRES_PORT}/postgres?sslmode={self.POSTGRES_SSL}"
+
+api_settings = ApiSettings()
+core_settings = CoreSettings()

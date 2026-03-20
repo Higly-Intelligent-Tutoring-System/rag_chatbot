@@ -3,8 +3,8 @@ from __future__ import annotations
 import pytest
 from langchain_core.messages import HumanMessage
 
-from orchestrator.nodes.retrieval import build_retrieval_node
-from orchestrator.nodes.generation import build_generation_node
+from chatbot_orchestrator.nodes.retrieval import build_retrieval_node
+from chatbot_orchestrator.nodes.generation import build_generation_node
 
 
 # ════════════════════════════════════════════════════════

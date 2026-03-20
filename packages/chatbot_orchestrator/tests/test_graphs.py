@@ -6,7 +6,7 @@ import pytest
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.store.memory import InMemoryStore
 
-from orchestrator.graphs.rag_graph import RAGGraph
+from chatbot_orchestrator.graphs.rag_graph import RAGGraph
 
 
 @pytest.fixture
