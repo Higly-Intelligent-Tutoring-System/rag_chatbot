@@ -10,7 +10,7 @@ from chatbot_orchestrator.nodes import *
 from chatbot_orchestrator.prompts.rag import get_rag_prompt
 
 
-class RAGGraph:
+class RAGGraphBuilder:
     """
     Configurable RAG graph.
 

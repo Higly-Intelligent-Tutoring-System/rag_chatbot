@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, Response
 from pydantic import BaseModel
 
 from chatbot_orchestrator.service import ChatService
@@ -41,3 +41,7 @@ async def chat(
         response=result,
         thread_id=req.thread_id,
     )
+
+@router.get('/liveness')
+async def liveness():
+    return Response(content='{"message": "OK"}', media_type="application/json", status_code=200)

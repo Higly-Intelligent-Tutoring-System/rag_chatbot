@@ -24,7 +24,7 @@ def process_and_store(documents):
     print(f"🧩 Created {len(chunks)} chunks.") 
 
     # 2. Get DB (Abstracted by core) 
-    vector_store = get_vector_store(collection_name=core_settings.VECTOR_DB_COLLECTION)
+    vector_store = get_vector_store(core_settings)
     print(f"✅ Vector Database loaded succesfully!")
    
     #3. Store 

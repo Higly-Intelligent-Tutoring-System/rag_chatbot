@@ -1,6 +1,7 @@
 from langchain_core.messages import AIMessage
 from langchain_core.language_models import BaseChatModel
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.documents import Document
 
 def build_generation_node(llm: BaseChatModel, prompt: ChatPromptTemplate):
 

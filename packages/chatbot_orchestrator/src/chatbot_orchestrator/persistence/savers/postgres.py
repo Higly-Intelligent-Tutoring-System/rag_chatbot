@@ -1,4 +1,4 @@
-from langgraph.checkpoint.postgres import AsyncPostgresSaver
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 
 async def get_checkpointer(db_uri: str):
     """Returns an asynch postgress short-term memory"""

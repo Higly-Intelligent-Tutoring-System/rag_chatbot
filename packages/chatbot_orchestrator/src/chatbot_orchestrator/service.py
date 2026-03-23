@@ -1,10 +1,11 @@
-from typing import Callable
+from langgraph.graph import StateGraph
+from chatbot_orchestrator.graphs.base import GraphBuilder
 
 
 class ChatService:
     def __init__(
         self,
-        graph_builder: Callable,
+        graph_builder: GraphBuilder,
         llm,
         retriever=None,
         checkpointer=None,
@@ -17,9 +18,10 @@ class ChatService:
         self.store = store
 
     async def compile(self):
-        builder = self.graph_builder(self.llm, self.retriever)
+        self.graph_builder.__init__(llm=self.llm, retriever=self.retriever)
+        uncompiled_graph : StateGraph = self.graph_builder.build()
 
-        self._compiled_graph = builder.compile(
+        self._compiled_graph = uncompiled_graph.compile(
             checkpointer=self.checkpointer,
             store=self.store,
         )

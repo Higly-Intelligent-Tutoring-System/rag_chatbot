@@ -52,3 +52,8 @@ Client (Streamlit / curl / any HTTP client)
 └──────────────────────┘   └────────────────┘
 ```
 
+## Run the webserver
+
+```bash
+(export $(cat .env.dev | xargs) && uv run uvicorn packages.api.src.api.main:app --reload)
+```

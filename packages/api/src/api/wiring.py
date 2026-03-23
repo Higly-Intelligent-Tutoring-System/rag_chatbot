@@ -19,8 +19,8 @@ async def build_chat_service(
         temperature=api_settings.MODEL_TEMPERATURE,
     )
     retriever = get_vector_store(core_settings)
-    checkpointer = get_checkpointer(api_settings.SAVER_BACKEND)
-    store = get_store(api_settings.STORER_BACKEND)
+    checkpointer = await get_checkpointer(api_settings.SAVER_BACKEND, api_settings.postgres_db_uri())
+    store = await get_store(api_settings.STORER_BACKEND, api_settings.postgres_db_uri())
     
     # Build service
     service = ChatService(
@@ -32,6 +32,6 @@ async def build_chat_service(
     )
 
     # compile graph
-    service.compile()
+    await service.compile()
 
     return service

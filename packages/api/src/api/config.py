@@ -7,6 +7,7 @@ class ApiSettings(BaseSettings):
     PROVIDER_NAME: str
     MODEL_TEMPERATURE: float
     AUTH_ENABLE: bool
+    TELEMETRY_ENABLE: bool
 
     PHOENIX_COLLECTOR_ENDPOINT: str
     PHOENIX_PROJECT_NAME: str

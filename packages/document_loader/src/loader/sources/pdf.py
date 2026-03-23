@@ -10,6 +10,7 @@ def load_pdf(filepath: str) -> list[Document]:
         loader = PyPDFLoader(filepath)
         for page in loader.lazy_load():
             page.metadata["type"] = "pdf"
+            page.metadata["source"] = filepath
             pages.append(page)
         print(f"✅ Loaded {len(pages)} pages from {filepath}")
 
