@@ -225,3 +225,6 @@ data/urls.txt
 # VSCode tmp files
 .vscode
 .VSCodeCounter
+
+# FastAPI
+.benchmarks

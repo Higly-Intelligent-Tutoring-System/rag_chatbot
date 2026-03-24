@@ -4,13 +4,13 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.retrievers import BaseRetriever
 from langgraph.graph import StateGraph, START, END
 
-from orchestrator.schemas.schemas import RagState
-from orchestrator.nodes import *
+from chatbot_orchestrator.schemas.schemas import RagState
+from chatbot_orchestrator.nodes import *
 
-from orchestrator.prompts.rag import get_rag_prompt
+from chatbot_orchestrator.prompts.rag import get_rag_prompt
 
 
-class RAGGraph:
+class RAGGraphBuilder:
     """
     Configurable RAG graph.
 

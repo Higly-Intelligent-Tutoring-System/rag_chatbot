@@ -13,11 +13,11 @@ from langchain_core.vectorstores import VectorStore
 
 
 # IMPORTANT: It has to be sync because if not it will return a coroutine, not a callable.
-def build_retrieval_node(retriever):
+def build_retrieval_node(retriever: VectorStore):
 
     async def retrieve(state):
         question = state["messages"][-1].content
-        docs = await retriever.ainvoke(question)
+        docs = retriever.similarity_search(question)
         return {
             "documents": docs
         }

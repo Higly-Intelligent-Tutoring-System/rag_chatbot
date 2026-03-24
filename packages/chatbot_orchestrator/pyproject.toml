@@ -27,7 +27,7 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/orchestrator"]
+packages = ["src/chatbot_orchestrator"]
 
 [tool.uv.sources]
 core = { workspace = true }

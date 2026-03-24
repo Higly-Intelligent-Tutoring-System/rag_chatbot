@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from orchestrator.graphs.registry import get_graph_builder, available_graphs
-from orchestrator.graphs.base import GraphBuilder
+from chatbot_orchestrator.graphs.registry import get_graph_builder, available_graphs
+from chatbot_orchestrator.graphs.base import GraphBuilder
 
 
 class TestRegistry:

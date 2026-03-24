@@ -39,7 +39,7 @@ rag-monorepo/
 Put in the file a url to parse recursively for each line and all the desired pdfs in the folder, then execute the following command:
 
 ```bash
-uv run --package document_loader python -m loader.batch
+(export $(cat .env.dev | xargs) && uv run --package document_loader python -m loader.batch)
 ```
 
 ## 🏗️ Architecture
