@@ -30,6 +30,9 @@ rag-monorepo/
   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
   ```
 
+// TODO: Add ollama as an optional package dependency if in dev env.
+// TODO: Add docker or any OCI tool as a dependency.
+
 ## 🚀 Setup & Installation
 
 1.  **Clone the repository:**
@@ -49,7 +52,7 @@ rag-monorepo/
     ```bash
     cp .env.dist .env
     ```
-    *Edit `.env` to define your Vector Database (Chroma/Supabase) and Embedding Model.*
+    // TODO: Specify that there are multiple env to create, and create the new dist.
 
 
 
@@ -105,6 +108,8 @@ This package exposes the framework-agnostic `chatbot_orchestrator` through RESTf
 - **Data Validation**: Uses strict Pydantic models to validate incoming requests (e.g., preventing empty messages) and format responses.
 
 Check the api's `README.md` for detailed usage documentation.
+
+// TODO: Add UI package.
 
 
 ## 🛠️ Development Workflow
