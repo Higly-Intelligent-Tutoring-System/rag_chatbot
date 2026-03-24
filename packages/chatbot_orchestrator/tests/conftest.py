@@ -4,8 +4,6 @@ import pytest
 
 from langchain_core.documents import Document
 from langchain_core.language_models.fake_chat_models import FakeListChatModel
-from langchain_core.retrievers import BaseRetriever
-from langchain_core.callbacks import CallbackManagerForRetrieverRun
 from langchain_core.prompts import ChatPromptTemplate
 
 
@@ -13,17 +11,14 @@ from langchain_core.prompts import ChatPromptTemplate
 #  Fake retriever — returns canned documents
 # ════════════════════════════════════════════════════════
 
-class FakeRetriever(BaseRetriever):
-    """Retriever that always returns the same documents."""
+class FakeVectorStore:
+    """Vector store that always returns the same documents."""
 
-    docs: list[Document] = []
+    def __init__(self, docs: list[Document]):
+        self.docs = docs
 
-    def _get_relevant_documents(
-        self, query: str, *, run_manager: CallbackManagerForRetrieverRun
-    ) -> list[Document]:
-        return self.docs
-
-    # ainvoke will auto-delegate to the sync version
+    def similarity_search(self, query: str, k: int = 4) -> list[Document]:
+        return self.docs[:k]
 
 
 @pytest.fixture
@@ -57,13 +52,13 @@ def fake_docs() -> list[Document]:
 
 
 @pytest.fixture
-def fake_retriever(fake_docs) -> FakeRetriever:
-    return FakeRetriever(docs=fake_docs)
+def fake_vectorstore(fake_docs):
+    return FakeVectorStore(fake_docs)
+
 
 @pytest.fixture
-def empty_retriever():
-    return FakeRetriever(docs=[])
-
+def empty_vectorstore():
+    return FakeVectorStore([])
 
 # ════════════════════════════════════════════════════════
 #  Fake LLM — returns pre-defined responses in order

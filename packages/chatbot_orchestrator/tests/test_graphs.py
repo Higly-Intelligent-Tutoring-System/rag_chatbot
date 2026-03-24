@@ -10,10 +10,10 @@ from chatbot_orchestrator.graphs.rag_graph import RAGGraphBuilder
 
 
 @pytest.fixture
-def compiled_graph(fake_retriever, fake_generation_llm):
+def compiled_graph(fake_vectorstore, fake_generation_llm):
     """Build and compile the RAG graph with all fakes."""
     graph_builder = RAGGraphBuilder(
-        retriever=fake_retriever,
+        retriever=fake_vectorstore,
         llm=fake_generation_llm,
     )
 
@@ -31,10 +31,10 @@ class TestRAGGraph:
         assert graph.name == "BasicRagGraph"
 
     def test_graph_builds_without_error(
-        self, fake_retriever, fake_generation_llm
+        self, fake_vectorstore, fake_generation_llm
     ):
         graph = RAGGraphBuilder(
-            retriever=fake_retriever,
+            retriever=fake_vectorstore,
             llm=fake_generation_llm,
         )
         builder = graph.build()

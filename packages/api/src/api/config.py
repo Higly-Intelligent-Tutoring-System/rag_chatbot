@@ -1,7 +1,12 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from core import CoreSettings
 
 class ApiSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_prefix="API_",
+        extra="ignore",
+    )
+
     GRAPH_NAME: str
     MODEL_NAME: str
     PROVIDER_NAME: str
@@ -20,10 +25,6 @@ class ApiSettings(BaseSettings):
     POSTGRES_DOMAIN: str
     POSTGRES_PORT: str
     POSTGRES_SSL: str
-
-    class Config:
-        env_prefix = "API_"
-        extra = "ignore"
 
     def postgres_db_uri(self):
         return f"postgresql://{self.POSTGRES_USERNAME}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_DOMAIN}:{self.POSTGRES_PORT}/postgres?sslmode={self.POSTGRES_SSL}"

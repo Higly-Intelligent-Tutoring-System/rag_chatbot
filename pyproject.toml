@@ -11,3 +11,13 @@ dependencies = [
 
 [tool.uv.workspace]
 members = ["packages/*"]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "ignore::DeprecationWarning:ldap3.*",
+  "ignore::DeprecationWarning:phoenix.*",
+  "ignore::DeprecationWarning:strawberry.*",
+  "ignore::pyparsing.exceptions.PyparsingDeprecationWarning",
+  "ignore::pydantic.warnings.PydanticDeprecatedSince212:pyiceberg.*",
+  "ignore::pydantic.warnings.PydanticDeprecatedSince20:pydantic.*",
+]

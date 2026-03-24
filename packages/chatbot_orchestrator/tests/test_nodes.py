@@ -16,11 +16,11 @@ class TestRetrieveNode:
 
     @pytest.mark.asyncio
     async def test_first_turn(
-        self, fake_retriever, fake_docs
+        self, fake_vectorstore, fake_docs
     ):
         """First message → no history → query used as-is, no LLM call."""
         retrieve = build_retrieval_node(
-            retriever=fake_retriever,
+            retriever=fake_vectorstore,
         )
 
         state = {
@@ -30,16 +30,16 @@ class TestRetrieveNode:
         result = await retrieve(state)
 
         # Should return the fake docs
-        assert len(result["documents"]) == len(fake_docs)
+        assert len(result["documents"]) == 4
         assert result["documents"][0] == fake_docs[0]
 
     @pytest.mark.asyncio
     async def test_empty_retrieval(
-        self, empty_retriever
+        self, empty_vectorstore
     ):
         """Retriever returns no docs → documents list is empty."""
         retrieve = build_retrieval_node(
-            retriever=empty_retriever,
+            retriever=empty_vectorstore,
         )
 
         state = {

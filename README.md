@@ -93,10 +93,18 @@ This package contains the LangGraph-based conversational engine responsible for 
 
 
 ### 4. ✉️ FastAPI Backend (`packages/api`)
-*Status: Under Construction*
 
-This package will contain the FastAPI application serving the Chatbot REST endpoints.
+The web server layer of the HITS RAG chatbot.
 
+This package exposes the framework-agnostic `chatbot_orchestrator` through RESTful HTTP endpoints using FastAPI. It acts as the bridge between client applications (UIs, external services) and the core conversational engine.
+
+**Features**:
+- **REST Endpoints**: Exposes the primary /chat endpoint for conversation and /liveness for infrastructure health checks.
+- **Lifespan Management**: Safely handles application startup and shutdown, wiring the ChatService into the server state.
+- **Observability**: Automatically initializes OpenTelemetry (e.g., Phoenix/Jaeger) tracing during server startup.
+- **Data Validation**: Uses strict Pydantic models to validate incoming requests (e.g., preventing empty messages) and format responses.
+
+Check the api's `README.md` for detailed usage documentation.
 
 
 ## 🛠️ Development Workflow
