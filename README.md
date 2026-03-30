@@ -12,9 +12,12 @@ rag-monorepo/
 │   ├── core/                   # 🧠 Shared Library (Config, Database, Embeddings)
 │   ├── document-loader/        # 📥 CLI Tool for Data Ingestion (Web & PDF)
 │   ├── chatbot_orchestration/  # 🤖 Application layer (Chatbot engine)
-│   └── api/                    # ✉️ FastAPI Backend (Chatbot Engine)
+│   ├── api/                    # ✉️ FastAPI Backend
+│   └── ui/                     # 🎓 Streamlit UI
+│
 ├── pyproject.toml              # Workspace Definition
 ├── uv.lock                     # Unified Lockfile
+├── .env.dist                   # Environment template
 └── ...                         # Other Configuration and Documentation
 ```
 
@@ -29,6 +32,11 @@ rag-monorepo/
   # Install uv (Windows)
   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
   ```
+
+  For developers, it is recomended to use `ollama` as the LLM provider and use a local model to avoid wasting paid tokens from any remote provider.
+
+  Moreover, even if all the project is runnable as detailed in the dedicated section below, adding a OCI compliant tool is highly suggested due to future deployment.
+
 
 ## 🚀 Setup & Installation
 
@@ -49,7 +57,13 @@ rag-monorepo/
     ```bash
     cp .env.dist .env
     ```
-    *Edit `.env` to define your Vector Database (Chroma/Supabase) and Embedding Model.*
+
+    Ideally up to 3 environments can be made:
+    - **Developement (.dev)**: Confined to feature implementation and testing.
+    - **Staging (.stg)**: Polished environment containing configuration for service separation at container level.
+    - **Production (.prod)**: Final environment to be deplouyed, must be always valid.
+
+    But in practice is important that it meets the needs of the moment.
 
 
 
@@ -105,6 +119,11 @@ This package exposes the framework-agnostic `chatbot_orchestrator` through RESTf
 - **Data Validation**: Uses strict Pydantic models to validate incoming requests (e.g., preventing empty messages) and format responses.
 
 Check the api's `README.md` for detailed usage documentation.
+
+
+### 5. 🎓 Streamlit UI Package (`packages/ui`)
+
+This package serves as the frontend layer of the smart tutoring system. It handles all user interactions, displays the conversational history, renders educational content (including code and math equations), and communicates with the backend tutoring engine (LLMs, RAG models, etc.) to generate personalized responses.
 
 
 ## 🛠️ Development Workflow

@@ -228,3 +228,6 @@ data/urls.txt
 
 # FastAPI
 .benchmarks
+
+# Exclde dist env template
+!.env.dist
