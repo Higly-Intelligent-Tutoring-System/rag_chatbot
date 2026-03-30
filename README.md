@@ -12,9 +12,12 @@ rag-monorepo/
 │   ├── core/                   # 🧠 Shared Library (Config, Database, Embeddings)
 │   ├── document-loader/        # 📥 CLI Tool for Data Ingestion (Web & PDF)
 │   ├── chatbot_orchestration/  # 🤖 Application layer (Chatbot engine)
-│   └── api/                    # ✉️ FastAPI Backend (Chatbot Engine)
+│   ├── api/                    # ✉️ FastAPI Backend
+│   └── ui/                     # 🎓 Streamlit UI
+│
 ├── pyproject.toml              # Workspace Definition
 ├── uv.lock                     # Unified Lockfile
+├── .env.dist                   # Environment template
 └── ...                         # Other Configuration and Documentation
 ```
 
@@ -30,8 +33,10 @@ rag-monorepo/
   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
   ```
 
-// TODO: Add ollama as an optional package dependency if in dev env.
-// TODO: Add docker or any OCI tool as a dependency.
+  For developers, it is recomended to use `ollama` as the LLM provider and use a local model to avoid wasting paid tokens from any remote provider.
+
+  Moreover, even if all the project is runnable as detailed in the dedicated section below, adding a OCI compliant tool is highly suggested due to future deployment.
+
 
 ## 🚀 Setup & Installation
 
@@ -52,7 +57,13 @@ rag-monorepo/
     ```bash
     cp .env.dist .env
     ```
-    // TODO: Specify that there are multiple env to create, and create the new dist.
+
+    Ideally up to 3 environments can be made:
+    - **Developement (.dev)**: Confined to feature implementation and testing.
+    - **Staging (.stg)**: Polished environment containing configuration for service separation at container level.
+    - **Production (.prod)**: Final environment to be deplouyed, must be always valid.
+
+    But in practice is important that it meets the needs of the moment.
 
 
 
@@ -109,7 +120,10 @@ This package exposes the framework-agnostic `chatbot_orchestrator` through RESTf
 
 Check the api's `README.md` for detailed usage documentation.
 
-// TODO: Add UI package.
+
+### 5. 🎓 Streamlit UI Package (`packages/ui`)
+
+This package serves as the frontend layer of the smart tutoring system. It handles all user interactions, displays the conversational history, renders educational content (including code and math equations), and communicates with the backend tutoring engine (LLMs, RAG models, etc.) to generate personalized responses.
 
 
 ## 🛠️ Development Workflow
