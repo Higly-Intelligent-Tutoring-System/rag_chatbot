@@ -17,7 +17,7 @@ This package serves as the frontend layer of the smart tutoring system. It handl
 To start the Streamlit application, run the following command from within the `ui/` directory:
 
 ```bash
-uv run streamlit run  packages/ui/src/ui/main.py
+(cd packages/ui && uv run streamlit run src/ui/main.py)
 ```
 
 By default, the application will be hosted locally at `http://localhost:8501`.
