@@ -6,6 +6,8 @@ from __future__ import annotations
 
 from .base import GraphBuilder
 from .rag_graph import RAGGraphBuilder
+from .hits_graph import HitsGraphBuilder
+from .nudging_italian_graph import NudgingItalianGraphBuilder
 
 # ── Registry ────────────────────────────────────────────
 _REGISTRY: dict[str, GraphBuilder] = {}
@@ -17,6 +19,8 @@ def _register(builder: GraphBuilder) -> None:
 
 # Register all graphs at import time
 _register(RAGGraphBuilder())
+_register(HitsGraphBuilder())
+_register(NudgingItalianGraphBuilder())
 
 
 def get_graph_builder(name: str) -> GraphBuilder:
