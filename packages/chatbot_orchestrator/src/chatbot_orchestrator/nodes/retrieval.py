@@ -1,4 +1,3 @@
-from langchain_core.documents import Document
 from langchain_core.vectorstores import VectorStore
 
 # async def retrive_docs(query: str, retriver: VectorStore) -> list[Document]:
