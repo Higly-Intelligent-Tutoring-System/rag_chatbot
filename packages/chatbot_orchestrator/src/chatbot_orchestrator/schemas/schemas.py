@@ -11,3 +11,6 @@ class RagState(MessagesState):
 class ConversationState(RagState):
     """Schema for multi-conversations per user paradigm."""
     conversation_id : UUID
+
+class RoutingState(RagState):
+    decision: str

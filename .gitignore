@@ -231,3 +231,6 @@ data/urls.txt
 
 # Exclde dist env template
 !.env.dist
+
+# Exclude arhives
+*.zip
