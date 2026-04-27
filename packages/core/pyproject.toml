@@ -5,7 +5,7 @@ description = "Core package containing all the shared components of the reposito
 requires-python = ">=3.13"
 dependencies = [
     "langchain-chroma>=1.1.0",
-    "sentence-transformers>=5.2.2",
+    "sentence-transformers>=5.4.1",
     "supabase>=2.27.3",
 ]
 
