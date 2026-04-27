@@ -1,6 +1,9 @@
 import sys
 import os
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from itertools import batched
+from typing import List
+from unstructured.chunking.title import chunk_by_title
+from langchain_core.documents import Document
 from loader.config import *
 from loader.sources.web import crawl_website
 from loader.sources.pdf import load_pdf
@@ -8,28 +11,61 @@ from core import get_vector_store
 from .config import core_settings, document_loader_settings
 
 
-def process_and_store(documents):
-    if not documents:
+def clean_metadata(chunk):
+    """Cleans metadata from unstructured chunks (chromaDB specific)"""
+    raw_metadata = chunk.metadata.to_dict()
+    cleaned_metadata = {
+        k: v for k, v in raw_metadata.items() 
+        if isinstance(v, (str, int, float, bool)) or v is None
+    }
+    return cleaned_metadata
+
+
+def process_and_store(elements_list):
+    """
+    Takes structural elements, chunks them smartly, 
+    converts to LangChain format, and stores in Chroma.
+    """
+    if not elements_list:
         print("No documents to process.")
         return
+    
+    docs = []
 
-    print(f"📚 Processing {len(documents)} raw documents...")
+    for elements in elements_list:
+        print(f"📚 Processing {len(elements)} raw documents...")
 
-    # 1. Split
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=document_loader_settings.CHUNK_SIZE, 
-        chunk_overlap=document_loader_settings.CHUNK_OVERLAP
+        # 1. Split
+        chunks = chunk_by_title(
+            elements=elements,
+            max_characters=1000,          # Optimized for your Italian BERT (512 tokens)
+            new_after_n_chars=800,
+            combine_text_under_n_chars=250,
+            overlap=100,
+            multipage_sections=True
         )
-    chunks = text_splitter.split_documents(documents) 
-    print(f"🧩 Created {len(chunks)} chunks.") 
+        print(f"🧩 Created {len(chunks)} chunks.")
 
-    # 2. Get DB (Abstracted by core) 
+        # 2 Convert to langchain Documents
+        for chunk in chunks:
+            metadata = clean_metadata(chunk) 
+
+            # Context Enrichment (Optional but recommended)
+            source = metadata.get("filename", "WebPage")
+            content = f"[Fonte: {source}] {chunk.text}"
+
+            docs.append(Document(
+                page_content=content,
+                metadata=metadata
+                ))
+
+    # 3. Get DB (Abstracted by core) 
     vector_store = get_vector_store(core_settings)
     print(f"✅ Vector Database loaded succesfully!")
    
-    #3. Store 
+    # 4. Store 
     print(f"💾 Uploading to Vector Database...")
-    vector_store.add_documents(chunks)
+    list(map(vector_store.add_documents, batched(docs, document_loader_settings.BATCH_SIZE)))
     print(f"✅ Done!")
 
 
@@ -41,21 +77,21 @@ def main():
 
     mode = sys.argv[1]
     target = sys.argv[2]
-    docs = []
+    elements = []
 
     match mode:
         case "web":
-            docs = crawl_website(
+            elements = crawl_website(
                 base_url=target, 
                 max_pages=document_loader_settings.MAX_PAGES_RECURSION
                 )
         case "pdf":
-            docs = load_pdf(filepath=target)
+            elements = load_pdf(filepath=target)
         case _:
-            print("Unknown mode. Use 'web'.")
+            print("Unknown mode. Use 'web' or 'pdf'.")
 
 
-    return process_and_store(docs)
+    return process_and_store(List(elements))
 
 
 if __name__ == "__main__":

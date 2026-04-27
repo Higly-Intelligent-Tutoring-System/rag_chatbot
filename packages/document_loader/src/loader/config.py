@@ -9,6 +9,7 @@ class DocumentLoaderSettings(BaseSettings):
 
     CHUNK_SIZE: int
     CHUNK_OVERLAP: int
+    BATCH_SIZE : int
     MAX_PAGES_RECURSION: int
     URL_PATH: str
     PDF_PATH: str
