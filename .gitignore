@@ -234,3 +234,7 @@ data/urls.txt
 
 # Exclude arhives
 *.zip
+
+# Exclude evaluations
+*.csv
+*.json
