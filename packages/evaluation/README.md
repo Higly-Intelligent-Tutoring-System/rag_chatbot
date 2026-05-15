@@ -1,4 +1,4 @@
-# RAG Evaluation
+# RAG Evaluation 📐
 
 Evaluate a RAG (Retrieval Augmented Generation) system with custom metrics
 
@@ -32,7 +32,7 @@ By synching the global dependencies of the repository the package will be automa
 Using `uv`:
 
 ```bash
-(export $(cat .env.dev | xargs) && uv run --package evaluation python -m evaluation.worker)
+(export $(cat envs/.env.dev | xargs) && uv run --package evaluation python -m evaluation.worker)
 ```
 
 
