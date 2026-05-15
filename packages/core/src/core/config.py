@@ -12,4 +12,5 @@ class CoreSettings(BaseSettings):
     VECTOR_DB_URL: str
     VECTOR_DB_DIR: str
     EMBEDDING_MODEL_NAME: str # = "sentence-transformers/all-MiniLM-L6-v2"
+    EMBEDDING_MODEL_PROVIDER: str # = "huggingface"
     CACHE_FOLDER: str # = "./model_cache"

@@ -14,9 +14,10 @@ def get_vector_store(settings: CoreSettings) -> VectorStore:
     db_backend = settings.VECTOR_DB_BACKEND.lower()
     embeddings = get_embeddings_model(settings)
 
-    # Set the padding token
-    if embeddings._client.tokenizer.pad_token is None:
-        embeddings._client.tokenizer.pad_token = embeddings._client.tokenizer.eos_token
+    # Set the padding token if Huggingface
+    if settings.EMBEDDING_MODEL_PROVIDER.lower() == "huggingface":
+        if embeddings._client.tokenizer.pad_token is None:
+            embeddings._client.tokenizer.pad_token = embeddings._client.tokenizer.eos_token
 
     print(f"✅ Embedding model loaded succsessfully!")
 
