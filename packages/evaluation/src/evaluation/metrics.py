@@ -22,3 +22,9 @@ FULL_METRICS = [
     LLMContextRecall(),
     FactualCorrectness(),
 ]
+
+# ── Use this set when you DO NOT have exposed context ──────────────────────
+CONTEXT_FREE_METRICS = [
+    ResponseRelevancy(),
+    FactualCorrectness(),
+]
