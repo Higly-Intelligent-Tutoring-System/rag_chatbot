@@ -207,13 +207,14 @@ marimo/_lsp/
 __marimo__/
 
 # Chroma local
-chroma_db_data/
+chroma*/
 
 # Model cache
 model_cache/
 
 # Ignore actual PDF binaries to keep repo small
 data/pdf_docs/*.pdf
+*.pdf
 
 # Ignore the URL list if it contains private links
 data/urls.txt

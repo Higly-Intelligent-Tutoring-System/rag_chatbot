@@ -8,6 +8,7 @@ from .base import GraphBuilder
 from .rag_graph import RAGGraphBuilder
 from .hits_graph import HitsGraphBuilder
 from .nudging_italian_graph import NudgingItalianGraphBuilder
+from .andrea_graph import AndreaGraphBuilder
 
 # ── Registry ────────────────────────────────────────────
 _REGISTRY: dict[str, GraphBuilder] = {}
@@ -21,6 +22,7 @@ def _register(builder: GraphBuilder) -> None:
 _register(RAGGraphBuilder())
 _register(HitsGraphBuilder())
 _register(NudgingItalianGraphBuilder())
+_register(AndreaGraphBuilder())
 
 
 def get_graph_builder(name: str) -> GraphBuilder:

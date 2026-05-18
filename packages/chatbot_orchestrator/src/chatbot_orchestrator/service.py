@@ -42,4 +42,14 @@ class ChatService:
             config=config,
         )
 
-        return result["messages"][-1].content
+        return self.parse_output(result["messages"][-1].content)
+
+
+    def parse_output(self, output) -> str:
+        if output is None:
+            return "Error."
+        if isinstance(output, str):
+            return output
+        if isinstance(output, list):
+            return str(output[-1]["text"])
+    

@@ -13,7 +13,8 @@ rag-monorepo/
 │   ├── document-loader/        # 📥 CLI Tool for Data Ingestion (Web & PDF)
 │   ├── chatbot_orchestration/  # 🤖 Application layer (Chatbot engine)
 │   ├── api/                    # ✉️ FastAPI Backend
-│   └── ui/                     # 🎓 Streamlit UI
+│   ├── ui/                     # 🎓 Streamlit UI
+│   └── evaluation/             # 📐 RAGAS evaluation engine
 │
 ├── pyproject.toml              # Workspace Definition
 ├── uv.lock                     # Unified Lockfile
@@ -124,6 +125,21 @@ Check the api's `README.md` for detailed usage documentation.
 ### 5. 🎓 Streamlit UI Package (`packages/ui`)
 
 This package serves as the frontend layer of the smart tutoring system. It handles all user interactions, displays the conversational history, renders educational content (including code and math equations), and communicates with the backend tutoring engine (LLMs, RAG models, etc.) to generate personalized responses.
+
+
+### 6. 📐 RAGAS evaluation engine (`packages/evaluation`)
+
+Testing logic for the retrival and generation phases of the inference pipeline.
+This package implements the RAGAS framework to evaluate overall application performance over the desired target responses it should ideally give out.
+
+Most of the metrics implemented rely on the LLM-as-a-judge paradigm, therefore they are not deterministic and should not be interpreted as if they were.
+These represent a useful benchmark to speed up the process by looking at the overall tendency of the system instead of single cases.
+
+It should be kept in mind that this is a time-intensive procedure to apply and should not be abused in cost-sensitive environments.
+The effectiveness of the tests are directly correlated to the capabilities of the LLM chosen as the judge.
+Some tests will fail using a small local model, a way more advanced provider as OpenAI, Gemini or Claude is sincerely suggested.
+
+Check the package's `README.md` for detailed documentation over the applied metrics.
 
 
 ## 🛠️ Development Workflow
