@@ -10,7 +10,7 @@ from langgraph.graph import StateGraph, START, END
 
 from chatbot_orchestrator.graphs.base import GraphBuilder
 from chatbot_orchestrator.schemas.schemas import RoutingState
-from chatbot_orchestrator.nodes.generation import build_generation_node
+from chatbot_orchestrator.nodes.generation import build_single_rag_node
 from chatbot_orchestrator.prompts.italian import *
 
 
@@ -45,19 +45,19 @@ class NudgingItalianGraphBuilder(GraphBuilder):
 
         retrieve = build_retrieval_node(retriever=retriever)
 
-        administrative = build_generation_node(
+        administrative = build_single_rag_node(
             llm=self._llm,
             prompt=get_administrative_prompt(),
         )
-        learning = build_generation_node(
+        learning = build_single_rag_node(
             llm=self._llm,
             prompt=get_learning_prompt(),
         )
-        services = build_generation_node(
+        services = build_single_rag_node(
             llm=self._llm,
             prompt=get_services_prompt(),
         )
-        planning = build_generation_node(
+        planning = build_single_rag_node(
             llm=self._llm,
             prompt=get_planning_prompt(),
         )

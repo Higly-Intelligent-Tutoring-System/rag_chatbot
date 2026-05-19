@@ -4,7 +4,7 @@ import pytest
 from langchain_core.messages import HumanMessage
 
 from chatbot_orchestrator.nodes.retrieval import build_retrieval_node
-from chatbot_orchestrator.nodes.generation import build_generation_node
+from chatbot_orchestrator.nodes.generation import build_single_rag_node
 
 
 # ════════════════════════════════════════════════════════
@@ -63,7 +63,7 @@ class TestGenerateNode:
         self, fake_generation_llm, fake_docs, fake_system_prompt
     ):
         """Generate node should produce a response and wrap it in messages."""
-        generate = build_generation_node(
+        generate = build_single_rag_node(
             llm=fake_generation_llm,
             prompt=fake_system_prompt,
         )
@@ -87,7 +87,7 @@ class TestGenerateNode:
         self, fake_generation_llm, fake_system_prompt
     ):
         """When no docs retrieved, should still produce a response."""
-        generate = build_generation_node(
+        generate = build_single_rag_node(
             llm=fake_generation_llm,
             prompt=fake_system_prompt,
         )

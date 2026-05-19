@@ -1,29 +1,21 @@
 from __future__ import annotations
 
+
 from langchain_core.language_models import BaseChatModel
 from langchain_core.retrievers import BaseRetriever
 from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, START, END, MessagesState
 
-from chatbot_orchestrator.nodes import *
+from chatbot_orchestrator.nodes.generation import build_multiple_generation_node
 from chatbot_orchestrator.prompts.gpt import get_gpt_a_prompt
-from supabase_auth import model
+
 
 
 class AndreaGraphBuilder:
     """
-    Configurable RAG graph.
+    GPT-A Graph: A simple graph that uses GPT-A for direct question answering without retrieval. This graph is designed to test the capabilities of GPT-A in generating accurate and concise answers based solely on the user's question, without any additional context from retrieved documents.
 
-    Defaults are sensible, but every dependency can be overridden:
-
-        # Default
-        RAGGraph()
-
-        # Everything custom
-        RAGGraph(
-            retriever=my_retriever,
-            llm=my_llm,
-        )
+    It does not rely on on-prem retrievers or vector stores, due to responses' API built-in file search.
     """
 
     def __init__(
@@ -54,7 +46,7 @@ class AndreaGraphBuilder:
         self._llm = model.bind_tools(tools)
         
         # ── Create node functions via factories ─────────
-        generate = build_generation_node(
+        generate = build_multiple_generation_node(
             llm=self._llm,
             prompt=get_gpt_a_prompt(),
         )
