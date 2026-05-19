@@ -11,9 +11,12 @@ class ApiSettings(BaseSettings):
     MODEL_NAME: str
     PROVIDER_NAME: str
     MODEL_TEMPERATURE: float
-    AUTH_ENABLE: bool
-    TELEMETRY_ENABLE: bool
 
+    AUTH_ENABLED: bool
+    SECRET_KEY: str
+    ACCESS_TOKEN_EXPIRE_SECONDS: int
+
+    TELEMETRY_ENABLE: bool
     PHOENIX_COLLECTOR_ENDPOINT: str
     PHOENIX_PROJECT_NAME: str
 
