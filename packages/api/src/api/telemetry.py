@@ -7,4 +7,5 @@ def init_telemetry(settings: ApiSettings):
         #endpoint=settings.PHOENIX_COLLECTOR_ENDPOINT,
         project_name=settings.PHOENIX_PROJECT_NAME,
         auto_instrument=True,    # Auto-instrument based on installed OI dependencies
+        batch=True,              # Batch spans for better performance in production
     )
