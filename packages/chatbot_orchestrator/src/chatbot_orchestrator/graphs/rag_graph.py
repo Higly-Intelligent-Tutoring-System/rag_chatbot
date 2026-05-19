@@ -48,7 +48,7 @@ class RAGGraphBuilder:
 
         # ── Create node functions via factories ─────────
         retrieve = build_retrieval_node(retriever=retriever)
-        generate = build_generation_node(
+        generate = build_single_rag_node(
             llm=self._llm,
             prompt=get_rag_prompt(),
         )
