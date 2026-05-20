@@ -17,6 +17,7 @@ dependencies = [
     "langchain-google-vertexai>=3.2.2",
     "pyjwt>=2.11.0",
     "pwdlib>=0.3.0",
+    "asyncpg>=0.31.0",
 ]
 
 [build-system]
