@@ -2,6 +2,8 @@ import streamlit as st
 import time
 import requests
 
+from ui.config import ui_settings
+
 # Page Configuration
 st.set_page_config(
     page_title="STUDY Chatbot",
@@ -48,13 +50,31 @@ if prompt := st.chat_input("Present yourself and your functions"):
     with st.chat_message("assistant", avatar=avatars["assistant"]):
         message_placeholder = st.empty()
         full_response = ""
-        assistant_response = requests.post(
-            url="http://0.0.0.0:8000/chat", 
-            json={
-                "message": prompt,
-                "thread_id": "streamlit-test",
-            }).json()["response"]
         
+        try:
+            resp = requests.post(
+                url=f"{ui_settings.api_url()}/chat",
+                json={
+                    "message": prompt,
+                    "thread_id": "streamlit-test",
+                },
+                timeout=10,
+            )
+        except requests.RequestException as e:
+            st.error(f"Request failed: {e}")
+            assistant_response = ""
+        else:
+            if resp.status_code == 200:
+                # decode JSON safely
+                try:
+                    assistant_response = resp.json().get("response", "")
+                except ValueError:
+                    st.error("Failed to decode JSON from API response.")
+                    assistant_response = ""
+            else:
+                st.error(f"API error {resp.status_code}: {resp.text}")
+                assistant_response = ""
+
         # Simulate stream of response with milliseconds delay
         for chunk in assistant_response.split():
             full_response += chunk + " "

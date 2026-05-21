@@ -1,0 +1,36 @@
+# Use the official Python image as the base
+FROM python:3.13-slim
+
+# Set environment variables 
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV HOME='/root'
+ENV UV_COMPILE_BYTECODE=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Set the working directory
+WORKDIR /rag-chatbot/
+
+# Copy pyproject.toml first for better caching
+COPY pyproject.toml .
+
+# Copy files to image
+COPY packages/ui /rag-chatbot/packages/ui
+
+# Install Python dependencies
+RUN uv sync --all-packages
+
+# Expose API
+EXPOSE 8501
+
+WORKDIR /rag-chatbot/packages/ui
+
+# Default command
+CMD ["uv", "run", "streamlit", "run",  "src/ui/main.py"]
