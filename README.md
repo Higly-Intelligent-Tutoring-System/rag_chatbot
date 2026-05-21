@@ -33,6 +33,7 @@ rag-monorepo/
   # Install uv (Windows)
   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
   ```
+- **podman**: OCI compliant tool to manage containers (alternative to `docker`, this one can be used as well). It requires `podman-compose` (e.q. `docker-compose`) as well.
 
   For developers, it is recomended to use `ollama` as the LLM provider and use a local model to avoid wasting paid tokens from any remote provider.
 
@@ -47,13 +48,7 @@ rag-monorepo/
     cd rag-chatbot
     ```
 
-2.  **Sync the Workspace:**
-    This command creates the virtual environment and installs dependencies for **all** packages in the workspace (Core, Loader, and API) simultaneously.
-    ```bash
-    uv sync --all-packages
-    ```
-
-3.  **Environment Configuration:**
+2.  **Environment Configuration:**
     Create your local configuration file from the template.
     ```bash
     cp .env.dist .env
@@ -66,6 +61,16 @@ rag-monorepo/
 
     But in practice is important that it meets the needs of the moment.
 
+3. **Start everything**
+    You can use the instructions inside each readme or just excute:
+    ```bash
+    podman compose -f docker-compose.yml up
+    ```
+
+If, by any chance, you do prefer spinning up every service from your machine without containers you can do it by syncing the workspace:
+```bash
+uv sync --all-packages
+```
 
 
 ## 📦 Packages Overview
