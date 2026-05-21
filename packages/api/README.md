@@ -110,7 +110,7 @@ Simple health check endpoint.
 From the repository root:
 
 ```bash
-(export $(cat .env.dev | xargs) && uv run --package api uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload)
+(export $(cat envs/.env.dev | xargs) && uv run --package api uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload)
 ```
 
 It is important to export the developement environment before launching the webserver because all the configuration is propagated top-down from the API package.

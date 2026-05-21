@@ -1,4 +1,3 @@
-# src/api/auth.py
 import jwt
 
 from typing import Annotated
@@ -7,14 +6,15 @@ from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from pwdlib import PasswordHash
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
-from .db import get_user_by_username
 from .config import api_settings
+from .models import User
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token", auto_error=False)
 password_hash = PasswordHash.recommended()
 
 
@@ -23,6 +23,11 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
     expires_in: int
 
+async def get_user_by_username(db: AsyncSession, username: str) -> User | None:
+    """Fetch a user by username. Returns None if not found."""
+    q = select(User).where(User.username == username)
+    result = await db.execute(q)
+    return result.scalar_one_or_none()
 
 async def verify_username_password_db(db: AsyncSession, username: str, password: str) -> str:
     user = await get_user_by_username(db, username)

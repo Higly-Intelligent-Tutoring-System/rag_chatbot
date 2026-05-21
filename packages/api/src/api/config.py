@@ -17,7 +17,8 @@ class ApiSettings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_SECONDS: int
 
     TELEMETRY_ENABLE: bool
-    PHOENIX_COLLECTOR_ENDPOINT: str
+    PHOENIX_COLLECTOR_DOMAIN: str
+    PHOENIX_COLLECTOR_PORT: int
     PHOENIX_PROJECT_NAME: str
 
     SAVER_BACKEND: str
@@ -29,8 +30,13 @@ class ApiSettings(BaseSettings):
     POSTGRES_PORT: str
     POSTGRES_SSL: str
 
-    def postgres_db_uri(self):
-        return f"postgresql://{self.POSTGRES_USERNAME}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_DOMAIN}:{self.POSTGRES_PORT}/postgres?sslmode={self.POSTGRES_SSL}"
+    def postgres_db_uri(self, checkpointer=False) -> str:
+        if checkpointer:
+            return f"postgresql://{self.POSTGRES_USERNAME}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_DOMAIN}:{self.POSTGRES_PORT}/postgres?sslmode=disable"
+        return f"postgresql+asyncpg://{self.POSTGRES_USERNAME}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_DOMAIN}:{self.POSTGRES_PORT}/postgres?sslmode=disable"
+    
+    def phoenix_collector_endpoint(self) -> str:
+        return f"grpc://{self.PHOENIX_COLLECTOR_DOMAIN}:{self.PHOENIX_COLLECTOR_PORT}"
 
 api_settings = ApiSettings()
 core_settings = CoreSettings()
