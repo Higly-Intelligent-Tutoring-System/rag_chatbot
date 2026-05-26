@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 
+from api.config import ApiSettings
 from langchain_core.language_models import BaseChatModel
 from langchain_core.retrievers import BaseRetriever
 from langchain_openai import ChatOpenAI
@@ -20,11 +21,9 @@ class AndreaGraphBuilder:
 
     def __init__(
         self,
-        retriever: BaseRetriever | None = None,
-        llm: BaseChatModel | None = None,
+        vs_id: str | None = None,
     ):
-        self._retriever = retriever
-        self._llm = llm
+        self._vs_id = vs_id
 
 
     @property
@@ -41,7 +40,7 @@ class AndreaGraphBuilder:
                 )
         tools = [{
             "type": "file_search",
-            "vector_store_ids": ["vs_6a072cf47c8481918470de3b01dcca74"]
+            "vector_store_ids": [self._vs_id] if self._vs_id else []
         }]
         self._llm = model.bind_tools(tools)
         

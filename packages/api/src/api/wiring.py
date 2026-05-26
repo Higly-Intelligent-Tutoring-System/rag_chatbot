@@ -29,6 +29,7 @@ async def build_chat_service(
         retriever=retriever,
         checkpointer=checkpointer,
         store=store,
+        api_settings=api_settings,
     )
 
     # compile graph

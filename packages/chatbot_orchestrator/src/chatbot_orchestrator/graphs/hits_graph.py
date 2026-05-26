@@ -40,10 +40,6 @@ class HitsGraphBuilder(GraphBuilder):
     
     def build(self) -> StateGraph:
         retriever = self._retriever
-        if retriever is None:
-            from core.vectordb import get_vector_store
-            retriever = get_vector_store()
-
         retrieve = build_retrieval_node(retriever=retriever)
 
         administrative = build_single_rag_node(

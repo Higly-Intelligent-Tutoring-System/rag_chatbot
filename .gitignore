@@ -214,6 +214,10 @@ model_cache/
 
 # Ignore actual PDF binaries to keep repo small
 data/pdf_docs/*.pdf
+data/pdf_docs/*.md
+data/pdf_docs/*.docx
+data/pdf_docs/*.doc
+data/all_docs
 *.pdf
 
 # Ignore the URL list if it contains private links

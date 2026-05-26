@@ -11,6 +11,7 @@ class ApiSettings(BaseSettings):
     MODEL_NAME: str
     PROVIDER_NAME: str
     MODEL_TEMPERATURE: float
+    RESPONSES_VS_ID: str
 
     AUTH_ENABLED: bool
     SECRET_KEY: str
