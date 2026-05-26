@@ -1,3 +1,5 @@
+import uuid
+
 import streamlit as st
 import time
 import requests
@@ -10,6 +12,16 @@ st.set_page_config(
     page_icon="🎓",
     layout="centered"
 )
+
+# Ensure a random thread_id by default
+if "thread_id" not in st.session_state:
+    st.session_state.thread_id = str(uuid.uuid4())
+
+# Place the New Conversation button below the header/introduction (left-aligned)
+if st.button("New Conversation"):
+    st.session_state.messages = [{"role": "assistant", "content": "Hello! Let's get started on your study journey. What do you need help with? 👇"}]
+    st.session_state.thread_id = str(uuid.uuid4())
+
 
 # Branded Header & Introduction
 st.title("🎓 HITS Chatbot")
@@ -56,9 +68,9 @@ if prompt := st.chat_input("Present yourself and your functions"):
                 url=f"{ui_settings.api_url()}/chat",
                 json={
                     "message": prompt,
-                    "thread_id": "streamlit-test",
+                    "thread_id": st.session_state.thread_id,
                 },
-                timeout=10,
+                timeout=60,
             )
         except requests.RequestException as e:
             st.error(f"Request failed: {e}")
