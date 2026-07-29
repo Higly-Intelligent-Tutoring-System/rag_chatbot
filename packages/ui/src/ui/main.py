@@ -88,13 +88,14 @@ if prompt := st.chat_input("Present yourself and your functions"):
                 assistant_response = ""
 
         # Simulate stream of response with milliseconds delay
-        for chunk in assistant_response.split():
-            full_response += chunk + " "
-            time.sleep(0.05)
-            # Add a blinking cursor to simulate typing
+        parts = assistant_response.split("\n")
+        full_response = ""
+        for part in parts:
+            full_response += part + "\n"
             message_placeholder.markdown(full_response + "▌")
-        
-        message_placeholder.markdown(full_response)
+            time.sleep(0.03)
+
+        message_placeholder.markdown(assistant_response)
         
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": full_response})
