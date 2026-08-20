@@ -5,7 +5,7 @@ from chatbot_orchestrator.service import ChatService
 from .wiring import build_chat_service
 from .routes import router
 from .telemetry import init_telemetry
-from .config import core_settings, api_settings
+from .config import core_settings, chatbot_settings, api_settings
 
 app = FastAPI()
 
@@ -18,7 +18,11 @@ async def lifespan(app: FastAPI):
     if api_settings.TELEMETRY_ENABLE:
         init_telemetry(api_settings)
     
-    service: ChatService = await build_chat_service(core_settings, api_settings)
+    service: ChatService = await build_chat_service(
+        core_settings=core_settings, 
+        chatbot_settings=chatbot_settings, 
+        api_settings=api_settings
+        )
     app.state.chat_service = service
     yield
     # await service.close()

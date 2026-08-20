@@ -1,6 +1,7 @@
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from core import CoreSettings
+from chatbot_orchestrator import ChatbotSettings
 
 class DocumentLoaderSettings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -28,6 +29,6 @@ class DocumentLoaderSettings(BaseSettings):
     ALLOWED_FILE_EXTENSIONS: list[str]
 
 
-
+chatbot_settings = ChatbotSettings()
 document_loader_settings = DocumentLoaderSettings()
 core_settings = CoreSettings()

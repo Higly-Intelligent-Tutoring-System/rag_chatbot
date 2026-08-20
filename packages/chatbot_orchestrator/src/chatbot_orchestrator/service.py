@@ -1,4 +1,3 @@
-from chatbot_orchestrator.graphs.andrea_graph import AndreaGraphBuilder
 from langgraph.graph import StateGraph
 from chatbot_orchestrator.graphs.base import GraphBuilder
 
@@ -11,20 +10,15 @@ class ChatService:
         retriever=None,
         checkpointer=None,
         store=None,
-        api_settings=None,
     ):
         self.graph_builder = graph_builder
         self.llm = llm
         self.retriever = retriever
         self.checkpointer = checkpointer
         self.store = store
-        self.api_settings = api_settings
 
     async def compile(self):
-        if self.graph_builder.name == "AndreaGraph":
-            self.graph_builder.__init__(vs_id=self.api_settings.RESPONSES_VS_ID if self.api_settings else None)
-        else:
-            self.graph_builder.__init__(llm=self.llm, retriever=self.retriever)
+        self.graph_builder.__init__(llm=self.llm, retriever=self.retriever)
         uncompiled_graph : StateGraph = self.graph_builder.build()
 
         self._compiled_graph = uncompiled_graph.compile(

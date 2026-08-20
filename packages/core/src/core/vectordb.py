@@ -45,7 +45,7 @@ def get_vector_store(settings: CoreSettings) -> VectorStore:
                 host=settings.VECTOR_DB_URL,
            )
         case "none":
-            print("⚠️ No vector database configured. Retrieval will not work unless using.")
+            print("⚠️ No vector database configured. Retrieval will not work unless using the Responses API.")
             return None
         case _:
             raise ValueError(f"Unsupported VECTOR_db_backend: {db_backend}")

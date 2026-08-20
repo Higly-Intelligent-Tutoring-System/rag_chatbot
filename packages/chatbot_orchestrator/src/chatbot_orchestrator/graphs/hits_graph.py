@@ -31,16 +31,14 @@ class HitsGraphBuilder(GraphBuilder):
         retriever: BaseRetriever | None = None,
         llm: BaseChatModel | None = None,
     ):
-        self._retriever = retriever
-        self._llm = llm
+        super().__init__(retriever, llm)
 
     @property
     def name(self) -> str:
         return "HITS"
     
     def build(self) -> StateGraph:
-        retriever = self._retriever
-        retrieve = build_retrieval_node(retriever=retriever)
+        retrieve = build_retrieval_node(retriever=self._retriever)
 
         administrative = build_single_rag_node(
             llm=self._llm,

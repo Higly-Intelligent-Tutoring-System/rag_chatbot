@@ -1,5 +1,10 @@
+from dataclasses import Field
+from typing import Optional
+
+from pydantic import computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from core import CoreSettings
+from chatbot_orchestrator import ChatbotSettings
 
 class ApiSettings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -7,12 +12,7 @@ class ApiSettings(BaseSettings):
         extra="ignore",
     )
 
-    GRAPH_NAME: str
-    MODEL_NAME: str
-    PROVIDER_NAME: str
-    MODEL_TEMPERATURE: float
-    RESPONSES_VS_ID: str
-
+    # Auth, Persistence, Telemetry, etc.
     AUTH_ENABLED: bool
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_SECONDS: int
@@ -39,5 +39,7 @@ class ApiSettings(BaseSettings):
     def phoenix_collector_endpoint(self) -> str:
         return f"grpc://{self.PHOENIX_COLLECTOR_DOMAIN}:{self.PHOENIX_COLLECTOR_PORT}"
 
+
 api_settings = ApiSettings()
+chatbot_settings = ChatbotSettings()
 core_settings = CoreSettings()
