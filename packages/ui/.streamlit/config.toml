@@ -1,6 +1,14 @@
 [theme]
 base="dark"
-backgroundColor="#0A192F"
-secondaryBackgroundColor="#112240"
+backgroundColor="#0A1628"
+secondaryBackgroundColor="#0F1E35"
 textColor="#E2E8F0"
 primaryColor="#64FFDA"
+font="sans serif"
+
+[client]
+showErrorDetails=true
+toolbarMode="minimal"
+
+[logger]
+level="warning"
