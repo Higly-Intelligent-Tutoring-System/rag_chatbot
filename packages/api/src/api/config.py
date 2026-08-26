@@ -16,6 +16,7 @@ class ApiSettings(BaseSettings):
     AUTH_ENABLED: bool
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_SECONDS: int
+    DOCS_ENABLED: bool
 
     TELEMETRY_ENABLE: bool
     PHOENIX_COLLECTOR_DOMAIN: str

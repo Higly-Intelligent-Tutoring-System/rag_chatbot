@@ -25,8 +25,14 @@ async def lifespan(app: FastAPI):
         )
     app.state.chat_service = service
     yield
-    # await service.close()
+    # await service.close()     TODO: Implement graceful shutdown
 
 
-app = FastAPI(title="HITS Chatbot API", lifespan=lifespan)
+app = FastAPI(
+    title="HITS Chatbot API", 
+    lifespan=lifespan,
+    docs_url="/docs" if api_settings.DOCS_ENABLED else None, 
+    redoc_url="/redoc" if api_settings.DOCS_ENABLED else None,
+    openapi_url="/openapi.json" if api_settings.DOCS_ENABLED else None,
+)
 app.include_router(router)

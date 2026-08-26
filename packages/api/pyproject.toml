@@ -5,7 +5,7 @@ description = "FastAPI service that powers the rag chatbot"
 authors = [{ name = "Valerio Conti", email = "conti.valerio@proton.me" }]
 dependencies = [
     "fastapi",
-    "uvicorn",
+    "uvicorn>=0.40.0",
     "core",
     "chatbot_orchestrator",
     "arize-phoenix>=13.15.0",
@@ -18,6 +18,8 @@ dependencies = [
     "pyjwt>=2.11.0",
     "pwdlib[argon2]>=0.3.0",
     "asyncpg>=0.31.0",
+    "gunicorn>=26.1.0",
+    "uvicorn-worker>=0.4.0",
 ]
 
 [build-system]

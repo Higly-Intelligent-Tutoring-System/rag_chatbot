@@ -24,7 +24,7 @@ class UiSettings(BaseSettings):
         # If a specific university is provided, you can route to different subdomains/ports
         # This example assumes the backend routes based on path or query parameter
         if university:
-            return f"{base_url}/{university}"  # or use query param: f"{base_url}?university={university}"
+            return f"{base_url}/api/{university}"  # or use query param: f"{base_url}?university={university}"
         
         return base_url
     

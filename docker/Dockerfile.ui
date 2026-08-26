@@ -4,8 +4,8 @@ FROM python:3.13-slim
 # Set environment variables 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV HOME='/root'
 ENV UV_COMPILE_BYTECODE=1
+ENV UV_NO_DEV=1
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -18,19 +18,29 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 # Set the working directory
 WORKDIR /rag-chatbot/
 
+# Create non-root user for security
+RUN groupadd --gid 1000 appgroup && \
+    useradd --uid 1000 --gid appgroup --shell /bin/bash --create-home appuser
+
 # Copy pyproject.toml first for better caching
 COPY pyproject.toml .
-
-# Copy files to image
-COPY packages/ui /rag-chatbot/packages/ui
+COPY packages/ui/pyproject.toml /rag-chatbot/packages/ui/pyproject.toml
 
 # Install Python dependencies
 RUN uv sync --all-packages
 
+# Copy files to image
+COPY packages/ui /rag-chatbot/packages/ui
+
+# Change ownership of working directory to appuser
+RUN chown -R appuser:appgroup /rag-chatbot
+
 # Expose API
 EXPOSE 8501
 
-WORKDIR /rag-chatbot/packages/ui
+# Switch to non-root user
+USER appuser
 
 # Default command
+WORKDIR /rag-chatbot/packages/ui
 CMD ["uv", "run", "streamlit", "run",  "src/ui/main.py"]

@@ -29,7 +29,7 @@ services:
       - db
       - phoenix
     env_file:
-      - ./envs/.env.prod
+      - ./envs/.env.prod.ita
     environment:
       API_POSTGRES_DOMAIN: db
       API_POSTGRES_PORT: 5432
@@ -39,9 +39,7 @@ services:
     ports:
       - "8000:8000"
   ui:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.ui
+    image: localhost/rag_chatbot_ui:0.1.0
     restart: always
     depends_on:
       - api
