@@ -6,19 +6,27 @@ import requests
 
 from ui.config import ui_settings
 
+# TODO: Add login form to connect to the /token endpoint of the API
+# -----------------------------------------------------------------------------
 # Page Configuration
+# -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="STUDY Chatbot",
     page_icon="🎓",
     layout="wide"
 )
 
-# Load CSS from file
+# -----------------------------------------------------------------------------
+# Load CSS
+# -----------------------------------------------------------------------------
 with open("src/ui/styles/main.css") as css_file:
     st.markdown(f"<style>{css_file.read()}</style>", unsafe_allow_html=True)
 
+# -----------------------------------------------------------------------------
 # University mapping with emoji flags
+# -----------------------------------------------------------------------------
 UNIVERSITIES = {
+    "🌍 Generic": None,
     "🇮🇹 Unicam": "ita",
     "🇸🇮 Maribor": "slo",
     "🇪🇸 Valladolid": "esp",
@@ -26,13 +34,133 @@ UNIVERSITIES = {
     "🇱🇹 Vilnius": "ltu",
 }
 
-# Ensure a random thread_id by default
+# -----------------------------------------------------------------------------
+# Default state initialization
+# -----------------------------------------------------------------------------
 if "thread_id" not in st.session_state:
     st.session_state.thread_id = str(uuid.uuid4())
 
-# Initialize selected university
 if "selected_university" not in st.session_state:
     st.session_state.selected_university = list(UNIVERSITIES.keys())[0]
+
+TOKEN_URL = f"{ui_settings.api_url(university=UNIVERSITIES[st.session_state.selected_university])}/token"
+
+# -----------------------------------------------------------------------------
+# Authentication helpers
+# -----------------------------------------------------------------------------
+
+def is_authenticated() -> bool:
+    """Return whether this Streamlit session currently has a JWT."""
+    return bool(st.session_state.get("access_token"))
+
+
+def login(username: str, password: str) -> tuple[bool, str]:
+    """
+    Authenticate against FastAPI.
+
+    OAuth2PasswordRequestForm expects form-encoded data, therefore we use
+    data= rather than json=.
+    """
+    try:
+        response = requests.post(
+            TOKEN_URL,
+            data={
+                "username": username,
+                "password": password,
+            },
+            timeout=15,
+        )
+    except requests.RequestException as error:
+        return False, f"Login request failed: {error}"
+
+    if response.status_code == 200:
+        try:
+            token_data = response.json()
+        except ValueError:
+            return False, "The API returned an invalid JSON response."
+
+        access_token = token_data.get("access_token")
+
+        if not access_token:
+            return False, "The API response did not contain an access token."
+
+        # Store authentication only in this user's Streamlit session.
+        st.session_state.access_token = access_token
+        st.session_state.token_type = token_data.get("token_type", "bearer")
+        st.session_state.expires_in = token_data.get("expires_in")
+
+        return True, ""
+
+    if response.status_code in (401, 403):
+        return False, "Invalid username or password."
+
+    return False, f"Login failed with API status {response.status_code}."
+
+
+def logout() -> None:
+    """Remove authentication data from the current Streamlit session."""
+    st.session_state.pop("access_token", None)
+    st.session_state.pop("token_type", None)
+    st.session_state.pop("expires_in", None)
+
+
+def authenticated_headers() -> dict[str, str]:
+    """Build the Authorization header for protected API requests."""
+    token_type = st.session_state.get("token_type", "bearer")
+    access_token = st.session_state["access_token"]
+
+    return {
+        "Authorization": f"{token_type.capitalize()} {access_token}",
+    }
+
+
+def post_to_chatbot(
+    *,
+    university_id: str | None,
+    prompt: str,
+    thread_id: str,
+) -> requests.Response:
+    """Send a request to the chatbot API."""
+    return requests.post(
+        url=f"{ui_settings.api_url(university_id, ui_settings.API_ENCRYPTION)}/chat",
+        headers=authenticated_headers() if ui_settings.API_ENCRYPTION else None,
+        json={
+            "message": prompt,
+            "thread_id": thread_id,
+            "university": university_id,
+        },
+        timeout=60,
+    )
+
+# -----------------------------------------------------------------------------
+# Login gate
+# -----------------------------------------------------------------------------
+if not is_authenticated() and ui_settings.API_ENCRYPTION:
+    st.title("🎓 HITS Chatbot")
+    st.subheader("Login")
+
+    with st.form("login_form"):
+        username = st.text_input("Username")
+        password = st.text_input("Password", type="password")
+
+        submitted = st.form_submit_button(
+            "Login",
+            use_container_width=True,
+        )
+
+    if submitted:
+        if not username or not password:
+            st.error("Please enter both username and password.")
+        else:
+            success, error_message = login(username, password)
+
+            if success:
+                st.rerun()
+            else:
+                st.error(error_message)
+
+    st.stop()
+
 
 # Header Section
 with st.container():
@@ -121,14 +249,10 @@ if prompt := st.chat_input("Type your message..."):
         university_id = UNIVERSITIES[st.session_state.selected_university]
         
         try:
-            resp = requests.post(
-                url=f"{ui_settings.api_url(university=university_id)}/chat",
-                json={
-                    "message": prompt,
-                    "thread_id": st.session_state.thread_id,
-                    "university": university_id,
-                },
-                timeout=60,
+            resp = post_to_chatbot(
+                university_id=university_id,
+                prompt=prompt,
+                thread_id=st.session_state.thread_id,
             )
         except requests.RequestException as e:
             st.error(f"Request failed: {e}")

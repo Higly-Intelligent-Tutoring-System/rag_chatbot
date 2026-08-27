@@ -8,8 +8,9 @@ class UiSettings(BaseSettings):
 
     API_DOMAIN: str
     API_PORT: int
+    API_ENCRYPTION: bool
 
-    def api_url(self, university: str | None = None) -> str:
+    def api_url(self, university: str | None = None, encryption: bool = False) -> str:
         """
         Generate API URL with optional university parameter.
         
@@ -19,7 +20,8 @@ class UiSettings(BaseSettings):
         Returns:
             API URL string
         """
-        base_url = f"http://{self.API_DOMAIN}:{self.API_PORT}"
+        protocol = "https" if encryption else "http"
+        base_url = f"{protocol}://{self.API_DOMAIN}:{self.API_PORT}"
         
         # If a specific university is provided, you can route to different subdomains/ports
         # This example assumes the backend routes based on path or query parameter
