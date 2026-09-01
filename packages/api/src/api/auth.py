@@ -1,7 +1,7 @@
 import jwt
 
 from typing import Annotated
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -39,7 +39,7 @@ def verify_password(plain_password, hashed_password):
     return password_hash.verify(plain_password, hashed_password)
 
 def create_access_token(subject: str, expires_delta: Optional[timedelta] = None) -> str:
-    expire = datetime.now(datetime.timezone.utc) + (expires_delta or timedelta(seconds=api_settings.ACCESS_TOKEN_EXPIRE_SECONDS))
+    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(seconds=api_settings.ACCESS_TOKEN_EXPIRE_SECONDS))
     to_encode = {"sub": subject, "exp": expire}
     return jwt.encode(to_encode, api_settings.SECRET_KEY, algorithm="HS256")
 
@@ -51,7 +51,7 @@ def decode_access_token(token: str) -> str:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
 # Dependency used by endpoints to protect routes.
-def get_current_user_optional(token: Annotated[str, Depends(oauth2_scheme)]):
+def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     # Called only when AUTH_ENABLED==True (see dependency selector below).
     user = decode_access_token(token)
     if not user:
@@ -62,4 +62,4 @@ def get_current_user_optional(token: Annotated[str, Depends(oauth2_scheme)]):
 def require_auth_dep(token: Annotated[str, Depends(oauth2_scheme)]):
     if not api_settings.AUTH_ENABLED:
         return None  # auth disabled: no-op
-    return get_current_user_optional(token)
+    return get_current_user(token)

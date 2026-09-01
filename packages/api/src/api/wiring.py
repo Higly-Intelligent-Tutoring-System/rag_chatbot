@@ -16,8 +16,8 @@ async def build_chat_service(
 
     llm = LLMFactory.create(**chatbot_settings.llm_config.to_factory_kwargs())
     retriever = get_vector_store(core_settings)
-    checkpointer = await get_checkpointer(api_settings.SAVER_BACKEND, api_settings.postgres_db_uri(checkpointer=True))
-    store = await get_store(api_settings.STORER_BACKEND, api_settings.postgres_db_uri(checkpointer=True))
+    checkpointer = await get_checkpointer(chatbot_settings.SAVER_BACKEND, api_settings.get_db_uri())
+    store = await get_store(chatbot_settings.STORER_BACKEND, api_settings.get_db_uri())
     
     # Build service
     service = ChatService(

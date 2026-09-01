@@ -23,20 +23,24 @@ class ApiSettings(BaseSettings):
     PHOENIX_COLLECTOR_PORT: int
     PHOENIX_PROJECT_NAME: str
 
-    SAVER_BACKEND: str
-    STORER_BACKEND: str
+    DATABASE_BACKEND: str
+    DATABASE_USERNAME: str
+    DATABASE_PASSWORD: str
+    DATABASE_DOMAIN: str
+    DATABASE_PORT: str
+    DATABASE_DBNAME: str
+    DATABASE_SSL: str
+    SQLITE_PATH: str
 
-    POSTGRES_USERNAME: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DOMAIN: str
-    POSTGRES_PORT: str
-    POSTGRES_SSL: str
-
-    def postgres_db_uri(self, checkpointer=False) -> str:
-        if checkpointer:
-            return f"postgresql://{self.POSTGRES_USERNAME}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_DOMAIN}:{self.POSTGRES_PORT}/postgres?sslmode=disable"
-        return f"postgresql+asyncpg://{self.POSTGRES_USERNAME}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_DOMAIN}:{self.POSTGRES_PORT}/postgres?sslmode=disable"
-    
+    def get_db_uri(self) -> str:
+        match self.DATABASE_BACKEND:
+            case "sqlite":
+                return f"sqlite+aiosqlite:///{self.SQLITE_PATH}"
+            case "postgres":
+                return f"postgresql+asyncpg://{self.DATABASE_USERNAME}:{self.DATABASE_PASSWORD}@{self.DATABASE_DOMAIN}:{self.DATABASE_PORT}/{self.DATABASE_DBNAME}"
+            case _:
+                raise ValueError(f"Unsupported database type: {self.DATABASE_BACKEND}")
+            
     def phoenix_collector_endpoint(self) -> str:
         return f"grpc://{self.PHOENIX_COLLECTOR_DOMAIN}:{self.PHOENIX_COLLECTOR_PORT}"
 

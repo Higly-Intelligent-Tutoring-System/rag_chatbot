@@ -24,6 +24,11 @@
     reverse_proxy api5:8000
   }
 
+  # Fallback for /token without university prefix (routes to default API)
+  handle /token {
+    reverse_proxy api:8000  # Default to first instance
+  }
+
   handle {
     reverse_proxy ui:8501
   }

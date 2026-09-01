@@ -31,9 +31,9 @@ services:
     env_file:
       - ./envs/.env.prod.ita
     environment:
-      API_POSTGRES_DOMAIN: db
-      API_POSTGRES_PORT: 5432
-      API_POSTGRES_SSL: disable
+      API_DATABASE_DOMAIN: db
+      API_DATABASE_PORT: 5432
+      API_DATABASE_SSL: disable
       API_PHOENIX_COLLECTOR_DOMAIN: phoenix
       API_PHOENIX_COLLECTOR_PORT: 4317
     ports:
@@ -46,8 +46,9 @@ services:
     ports:
       - "8501:8501"
     environment:
-      - UI_API_DOMAIN=api
-      - UI_API_PORT=8000
+      UI_API_DOMAIN: api
+      UI_API_PORT: 8000
+      UI_API_ENCRYPTION: False
 
 volumes:
   db_data:

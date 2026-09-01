@@ -10,21 +10,22 @@ x-api-base: &api_base
   restart: always
   healthcheck:
     test: ["CMD", "curl", "-f", "http://localhost:8000/liveness"]
-    interval: 60s
+    interval: 30s
     timeout: 5s
     retries: 3
     start_period: 10s
   depends_on:
-    - db
-    - phoenix
-  env_file:
-    - ./envs/.env.prod.ita
+    db:
+      condition: service_healthy
+    phoenix:
+      condition: service_started
   environment:
-    API_POSTGRES_DOMAIN: db
-    API_POSTGRES_PORT: 5432
-    API_POSTGRES_SSL: disable
+    API_DATABASE_DOMAIN: db
+    API_DATABASE_PORT: 5432
+    API_DATABASE_SSL: disable
     API_PHOENIX_COLLECTOR_DOMAIN: phoenix
     API_PHOENIX_COLLECTOR_PORT: 4317
+    LANGGRAPH_STRICT_MSGPACK: true
   expose:
     - "8000"
   networks:
@@ -35,18 +36,26 @@ services:
     image: docker.io/library/postgres:17
     restart: always
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+      - ./docker/postgres-init:/docker-entrypoint-initdb.d:ro
     env_file:
       - envs/infrastructure.env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
   phoenix:
     image: arizephoenix/phoenix:latest
     depends_on:
-      - db
-    ports:
-      - "6006:6006"  # UI and OTLP HTTP collector
-      - "4317:4317"  # OTLP gRPC collector
+      db:
+        condition: service_healthy
+    expose:
+      - "6006"  # UI and OTLP HTTP collector
+      - "4317"  # OTLP gRPC collector
     env_file:
       - envs/infrastructure.env
   api:
@@ -78,16 +87,28 @@ services:
       - rag_chatbot_ui:latest
     restart: always
     depends_on:
-      - api
-      - api2
-      - api3
-      - api4
-      - api5
+      api:
+        condition: service_started
+      api2:
+        condition: service_started
+      api3:
+        condition: service_started
+      api4:
+        condition: service_started
+      api5:
+        condition: service_started        
     expose:
       - "8501"
     environment:
-      - UI_API_DOMAIN=caddy
-      - UI_API_PORT=8080
+      UI_API_DOMAIN: caddy
+      UI_API_PORT: 8080
+      UI_API_ENCRYPTION: True
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
     networks:
       - caddy_net
   caddy:
@@ -95,16 +116,9 @@ services:
     ports: 
       - "8080:8080"
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
-    depends_on:
-      - ui
-      - api
-      - api2
-      - api3
-      - api4
-      - api5
     networks:
       - caddy_net
 

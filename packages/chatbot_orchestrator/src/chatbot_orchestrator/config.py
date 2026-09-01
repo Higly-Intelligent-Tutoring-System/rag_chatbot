@@ -27,6 +27,10 @@ class ChatbotSettings(BaseSettings):
     MODEL_TOP_P: Optional[float] = Field(default=None)
     MODEL_FREQUENCY_PENALTY: Optional[float] = Field(default=None)
 
+    # Short and long term memory configuration
+    SAVER_BACKEND: str
+    STORER_BACKEND: str
+
     @computed_field
     @property
     def llm_config(self) -> LLMConfig:

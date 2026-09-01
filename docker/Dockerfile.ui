@@ -15,31 +15,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Set the working directory
-WORKDIR /rag-chatbot/
-
 # Create non-root user for security
 RUN groupadd --gid 1000 appgroup && \
     useradd --uid 1000 --gid appgroup --shell /bin/bash --create-home appuser
 
+# Switch to non-root user
+USER appuser
+
+# Set the working directory
+WORKDIR /rag-chatbot/
+
 # Copy pyproject.toml first for better caching
-COPY pyproject.toml .
-COPY packages/ui/pyproject.toml /rag-chatbot/packages/ui/pyproject.toml
+COPY --chown=appuser:appgroup pyproject.toml .
+COPY --chown=appuser:appgroup packages/ui/pyproject.toml /rag-chatbot/packages/ui/pyproject.toml
+
 
 # Install Python dependencies
 RUN uv sync --all-packages
 
 # Copy files to image
-COPY packages/ui /rag-chatbot/packages/ui
-
-# Change ownership of working directory to appuser
-RUN chown -R appuser:appgroup /rag-chatbot
+COPY --chown=appuser:appgroup packages/ui /rag-chatbot/packages/ui
 
 # Expose API
 EXPOSE 8501
-
-# Switch to non-root user
-USER appuser
 
 # Default command
 WORKDIR /rag-chatbot/packages/ui

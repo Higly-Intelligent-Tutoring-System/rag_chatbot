@@ -243,3 +243,6 @@ data/urls.txt
 # Exclude evaluations
 *.csv
 *.json
+
+# Exclude test db files
+*.db

@@ -7,7 +7,7 @@ from ui.config import ui_settings
 def token_url() -> str:
     """Return the FastAPI token endpoint URL."""
 
-    return f"{ui_settings.api_url(university=None)}/token"
+    return f"{ui_settings.api_url(university=None, encryption=False)}/token"
 
 
 def is_authenticated() -> bool:
@@ -25,6 +25,7 @@ def authenticate(username: str, password: str) -> tuple[bool, str]:
     """
 
     try:
+        print("Sending auth request to " + token_url())
         response = requests.post(
             token_url(),
             data={
@@ -40,7 +41,7 @@ def authenticate(username: str, password: str) -> tuple[bool, str]:
         return False, "Invalid username or password."
 
     if response.status_code != 200:
-        return False, f"Login failed with status {response.status_code}."
+        return False, f"Login failed with status {response.status_code}, {response.json()}."
 
     try:
         token_data = response.json()
