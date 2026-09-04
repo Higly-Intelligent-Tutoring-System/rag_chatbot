@@ -135,7 +135,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-*.env*
 .envrc
 .venv
 env/
@@ -234,9 +233,6 @@ data/urls.txt
 # FastAPI
 .benchmarks
 
-# Exclde dist env template
-!.env.dist
-
 # Exclude arhives
 *.zip
 
@@ -246,3 +242,15 @@ data/urls.txt
 
 # Exclude test db files
 *.db
+
+# Ignore all environment files
+envs/*
+
+# But track template/distribution files
+!envs/*.dist
+
+# Secrets
+secrets/
+
+# rclone tokens
+rclone/*.conf

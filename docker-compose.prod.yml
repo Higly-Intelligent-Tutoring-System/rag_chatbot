@@ -41,13 +41,28 @@ services:
       - db_data:/var/lib/postgresql/data
       - ./docker/postgres-init:/docker-entrypoint-initdb.d:ro
     env_file:
-      - envs/infrastructure.env
+      - envs/postgres.env
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 20
       start_period: 10s
+    networks:
+      - backup_net
+  db-backup:
+    build: .
+    image: docker/Dockerfile.backup
+    restart: "no"
+    env_file:
+      - envs/pg_backup.env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./rclone:/config/rclone:ro
+    networks:
+      - backup_net
   phoenix:
     image: arizephoenix/phoenix:latest
     depends_on:
@@ -57,7 +72,7 @@ services:
       - "6006"  # UI and OTLP HTTP collector
       - "4317"  # OTLP gRPC collector
     env_file:
-      - envs/infrastructure.env
+      - envs/phoenix.env
   api:
     <<: *api_base
     env_file:
@@ -100,7 +115,7 @@ services:
     expose:
       - "8501"
     environment:
-      UI_API_DOMAIN: caddy
+      UI_API_DOMAIN: hits-chatbot.duckdns.org
       UI_API_PORT: 8080
       UI_API_ENCRYPTION: True
     healthcheck:
@@ -112,17 +127,25 @@ services:
     networks:
       - caddy_net
   caddy:
-    image: docker.io/library/caddy:2
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.caddy
+      tags:
+      - rag_chatbot_caddy:latest
     ports: 
-      - "8080:8080"
+      - "80:80"
+      - "443:443"
+    env_file:
+      - envs/caddy.env
     volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile.prod
       - caddy_data:/data
       - caddy_config:/config
     networks:
       - caddy_net
 
 networks:
+  backup_net:
   caddy_net:
     driver: bridge
 

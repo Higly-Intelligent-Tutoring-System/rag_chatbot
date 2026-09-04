@@ -1,4 +1,8 @@
-hits.duckdns.org {
+{
+  email {env.EMAIL}
+}
+
+hits-chatbot.duckdns.org {
   handle /api/ita/* {
     uri strip_prefix /api/ita
     reverse_proxy api:8000
@@ -29,6 +33,14 @@ hits.duckdns.org {
   }
 }
 
-telemetry.hits.duckdns.org {
+hits-telemetry.duckdns.org {
+  basic_auth {
+        smoothoperator {env.AUTH_HASH}
+  }
+
   reverse_proxy phoenix:6006
+}
+
+tls {
+	dns duckdns {env.DUCKDNS_API_TOKEN}
 }
