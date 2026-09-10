@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from langchain_core.language_models import BaseChatModel
 from langchain_core.retrievers import BaseRetriever
-from langgraph.graph import StateGraph, START, END, MessagesState
+from langgraph.graph import StateGraph, START, END
 
 from chatbot_orchestrator.graphs.base import GraphBuilder
-from chatbot_orchestrator.nodes.generation import build_multiple_generation_node
-from chatbot_orchestrator.prompts.gpt import get_vilnius_prompt
+from chatbot_orchestrator.schemas.schemas import AndreaState
+from chatbot_orchestrator.nodes.generation import build_andrea_generation_node
+from chatbot_orchestrator.prompts.gpt import get_refined_prompt
 
 
 
@@ -31,13 +32,13 @@ class AndreaGraphBuilder(GraphBuilder):
 
     def build(self) -> StateGraph:
         # ── Create node functions via factories ─────────
-        generate = build_multiple_generation_node(
+        generate = build_andrea_generation_node(
             llm=self._llm,
-            prompt=get_vilnius_prompt(),
+            prompt=get_refined_prompt(),
         )
 
         # ── Assemble graph ──────────────────────────────
-        builder = StateGraph(MessagesState)
+        builder = StateGraph(AndreaState)
 
         builder.add_node("generate", generate)
 

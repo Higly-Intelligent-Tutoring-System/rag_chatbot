@@ -31,6 +31,9 @@ class ChatbotSettings(BaseSettings):
     SAVER_BACKEND: str
     STORER_BACKEND: str
 
+    # University name
+    UNIVERSITY: str
+
     @computed_field
     @property
     def llm_config(self) -> LLMConfig:

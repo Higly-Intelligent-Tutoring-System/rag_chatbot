@@ -41,5 +41,3 @@ app = FastAPI(
     openapi_url="/openapi.json" if api_settings.DOCS_ENABLED else None,
 )
 app.include_router(router)
-
-# TODO: Add rate limits and automated souspicius IP ban with fastap-guard

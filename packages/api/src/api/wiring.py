@@ -18,6 +18,7 @@ async def build_chat_service(
     retriever = get_vector_store(core_settings)
     checkpointer = await get_checkpointer(chatbot_settings.SAVER_BACKEND, api_settings.get_db_uri())
     store = await get_store(chatbot_settings.STORER_BACKEND, api_settings.get_db_uri())
+    university = chatbot_settings.UNIVERSITY
     
     # Build service
     service = ChatService(
@@ -26,6 +27,7 @@ async def build_chat_service(
         retriever=retriever,
         checkpointer=checkpointer,
         store=store,
+        university=university
     )
 
     # compile graph
