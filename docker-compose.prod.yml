@@ -29,7 +29,8 @@ x-api-base: &api_base
   expose:
     - "8000"
   networks:
-    - caddy_net
+    - business_net
+    - edge_net
 
 services:
   db:
@@ -50,9 +51,11 @@ services:
       start_period: 10s
     networks:
       - backup_net
+      - business_net
   db-backup:
-    build: .
-    image: docker/Dockerfile.backup
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backup
     restart: "no"
     env_file:
       - envs/pg_backup.env
@@ -60,11 +63,11 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./rclone:/config/rclone:ro
+      - ./rclone:/config/rclone:rw
     networks:
       - backup_net
   phoenix:
-    image: arizephoenix/phoenix:latest
+    image: docker.io/arizephoenix/phoenix:20.8
     depends_on:
       db:
         condition: service_healthy
@@ -73,6 +76,8 @@ services:
       - "4317"  # OTLP gRPC collector
     env_file:
       - envs/phoenix.env
+    networks:
+      - business_net
   api:
     <<: *api_base
     env_file:
@@ -125,7 +130,7 @@ services:
       retries: 3
       start_period: 15s
     networks:
-      - caddy_net
+      - edge_net
   caddy:
     build:
       context: .
@@ -142,14 +147,42 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     networks:
-      - caddy_net
+      - edge_net
+  uptime-kuma:
+    image: docker.io/louislam/uptime-kuma:2.5.3
+    container_name: uptime-kuma
+    restart: always
+    volumes:
+      - uptime-kuma_data:/app/data
+    expose:
+      - "3001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/entry/bookmark"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - db
+      - phoenix
+      - api
+      - ui
+      - caddy
+    networks:
+      - edge_net
+      - business_net
+      - backup_net
+    environment:
+      UPTIME_KUMA_PORT: "3001"
 
 networks:
   backup_net:
-  caddy_net:
+  business_net:
+  edge_net:
     driver: bridge
 
 volumes:
   db_data:
   caddy_data:
   caddy_config:
+  uptime-kuma_data:

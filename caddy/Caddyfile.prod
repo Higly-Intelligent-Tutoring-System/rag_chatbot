@@ -41,6 +41,14 @@ hits-telemetry.duckdns.org {
   reverse_proxy phoenix:6006
 }
 
+hits-status.duckdns.org {
+  basic_auth {
+    smoothoperator {env.AUTH_HASH}
+  }
+
+  reverse_proxy uptime-kuma:3001
+}
+
 tls {
 	dns duckdns {env.DUCKDNS_API_TOKEN}
 }
