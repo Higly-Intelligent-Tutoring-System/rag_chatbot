@@ -10,3 +10,4 @@ WITH PASSWORD :'api_password';
 
 CREATE USER "backup-agent"
 WITH PASSWORD :'backup_password';
+ALTER USER "backup-agent" SUPERUSER;
