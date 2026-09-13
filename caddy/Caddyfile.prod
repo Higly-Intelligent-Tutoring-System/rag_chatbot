@@ -1,0 +1,54 @@
+{
+  email {env.EMAIL}
+}
+
+hits-chatbot.duckdns.org {
+  handle /api/ita/* {
+    uri strip_prefix /api/ita
+    reverse_proxy api:8000
+  }
+
+  handle /api/slo/* {
+    uri strip_prefix /api/slo
+    reverse_proxy api2:8000
+  }
+
+  handle /api/esp/* {
+    uri strip_prefix /api/esp
+    reverse_proxy api3:8000
+  }
+
+  handle /api/rou/* {
+    uri strip_prefix /api/rou
+    reverse_proxy api4:8000
+  }
+
+  handle /api/ltu/* {
+    uri strip_prefix /api/ltu
+    reverse_proxy api5:8000
+  }
+
+  handle {
+    reverse_proxy ui:8501
+  }
+}
+
+hits-telemetry.duckdns.org {
+  basic_auth {
+        smoothoperator {env.AUTH_HASH}
+  }
+
+  reverse_proxy phoenix:6006
+}
+
+hits-status.duckdns.org {
+  basic_auth {
+    smoothoperator {env.AUTH_HASH}
+  }
+
+  reverse_proxy uptime-kuma:3001
+}
+
+tls {
+	dns duckdns {env.DUCKDNS_API_TOKEN}
+}

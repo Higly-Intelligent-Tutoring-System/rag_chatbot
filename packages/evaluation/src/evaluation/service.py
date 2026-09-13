@@ -53,7 +53,7 @@ class EvalService:
         embeddings = self.evaluator_emb
         run_config = self.run_config
 
-        @experiment(name=self.experiment_name)
+        @experiment()
         def scoring_fn(sample):
             scores = {}
             for metric in metrics:

@@ -135,7 +135,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env*
 .envrc
 .venv
 env/
@@ -214,6 +213,10 @@ model_cache/
 
 # Ignore actual PDF binaries to keep repo small
 data/pdf_docs/*.pdf
+data/pdf_docs/*.md
+data/pdf_docs/*.docx
+data/pdf_docs/*.doc
+data/all_docs
 *.pdf
 
 # Ignore the URL list if it contains private links
@@ -230,12 +233,24 @@ data/urls.txt
 # FastAPI
 .benchmarks
 
-# Exclde dist env template
-!.env.dist
-
 # Exclude arhives
 *.zip
 
 # Exclude evaluations
 *.csv
 *.json
+
+# Exclude test db files
+*.db
+
+# Ignore all environment files
+envs/*
+
+# But track template/distribution files
+!envs/*.dist
+
+# Secrets
+secrets/
+
+# rclone tokens
+rclone/*.conf

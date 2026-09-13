@@ -1,0 +1,29 @@
+FROM alpine:3.22
+
+RUN apk add --no-cache \
+    age \
+    bash \
+    ca-certificates \
+    curl \
+    postgresql-client \
+    rclone \
+    tzdata
+
+# Install supercronic (lightweight cron for containers)
+RUN SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.29/supercronic-linux-amd64 && \
+    SUPERCRONIC=supercronic-linux-amd64 && \
+    curl -fsSLO "$SUPERCRONIC_URL" && \
+    chmod +x "$SUPERCRONIC" && \
+    mv "$SUPERCRONIC" /usr/local/bin/supercronic
+
+COPY docker/pg_backup/backup.sh /usr/local/bin/backup.sh
+RUN chmod 0755 /usr/local/bin/backup.sh
+
+# Set timezone to CEST
+ENV TZ=Europe/Paris
+
+# Create crontab file
+RUN echo "0 3 * * * /usr/local/bin/backup.sh" > /etc/crontabs/backup
+
+# Start supercronic
+ENTRYPOINT ["/usr/local/bin/supercronic", "/etc/crontabs/backup"]

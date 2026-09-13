@@ -110,7 +110,7 @@ Simple health check endpoint.
 From the repository root:
 
 ```bash
-(export $(cat .env.dev | xargs) && uv run --package api uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload)
+(export $(cat envs/.env.dev | xargs) && uv run --package api uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload)
 ```
 
 It is important to export the developement environment before launching the webserver because all the configuration is propagated top-down from the API package.
@@ -193,6 +193,33 @@ The test suite covers:
 
 The chatbot service used in endpoint tests should be mocked or overridden to avoid calling real model providers during test execution.
 
+## Additional Toools
+
+### Adding users to the DB
+
+Considering that the service does not need to manage users in runtime, all the users that should be able to access the chatbot should be defined explicitely after the initialization of the database (it is sufficient to launch the api one time to do so).
+
+To create the users create a file like `users.json`, formatted in this way:
+```json
+[
+  {
+    "username": "alice",
+    "password": "temporary-password-1"
+  },
+  {
+    "username": "bob",
+    "password": "temporary-password-2"
+  }
+]
+```
+
+Then call the tool with this command:
+```bash
+(export $(cat envs/<envfile> | xargs) && uv run python -m api.tools.add_users --database-url "<db_url>"   --users-file "./users.json")
+```
+
+Be sure to have the correct relative path when writing the location of the user file, otherwise you can use an absolute path to be sure.
+
 ## Development Notes
 
 ### Lifespan initialization
@@ -234,3 +261,5 @@ This avoids initializing or calling real LLM infrastructure during endpoint test
 ## Status
 
 This package is functional and provides the current HTTP interface for the chatbot, but it is expected to evolve as the API surface and deployment requirements grow.
+
+# TODO: Check and rewrite all the docs before the last production commit

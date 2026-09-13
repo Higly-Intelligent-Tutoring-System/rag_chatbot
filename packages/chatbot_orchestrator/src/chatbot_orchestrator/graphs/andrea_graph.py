@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-
 from langchain_core.language_models import BaseChatModel
 from langchain_core.retrievers import BaseRetriever
-from langchain_openai import ChatOpenAI
-from langgraph.graph import StateGraph, START, END, MessagesState
+from langgraph.graph import StateGraph, START, END
 
-from chatbot_orchestrator.nodes.generation import build_multiple_generation_node
-from chatbot_orchestrator.prompts.gpt import get_gpt_a_prompt
+from chatbot_orchestrator.graphs.base import GraphBuilder
+from chatbot_orchestrator.schemas.schemas import AndreaState
+from chatbot_orchestrator.nodes.generation import build_andrea_generation_node
+from chatbot_orchestrator.prompts.gpt import get_refined_prompt
 
 
 
-class AndreaGraphBuilder:
+class AndreaGraphBuilder(GraphBuilder):
     """
     GPT-A Graph: A simple graph that uses GPT-A for direct question answering without retrieval. This graph is designed to test the capabilities of GPT-A in generating accurate and concise answers based solely on the user's question, without any additional context from retrieved documents.
 
@@ -23,8 +23,7 @@ class AndreaGraphBuilder:
         retriever: BaseRetriever | None = None,
         llm: BaseChatModel | None = None,
     ):
-        self._retriever = retriever
-        self._llm = llm
+        super().__init__(retriever, llm)
 
 
     @property
@@ -32,27 +31,14 @@ class AndreaGraphBuilder:
         return "AndreaGraph"
 
     def build(self) -> StateGraph:
-        # ── Attaching openai's LLM with server tools ────
-        model = ChatOpenAI(
-                    model="gpt-5.4-mini", 
-                    use_responses_api=True, 
-                    reasoning={"effort": "low"},
-                    output_version="v1",
-                )
-        tools = [{
-            "type": "file_search",
-            "vector_store_ids": ["vs_6a072cf47c8481918470de3b01dcca74"]
-        }]
-        self._llm = model.bind_tools(tools)
-        
         # ── Create node functions via factories ─────────
-        generate = build_multiple_generation_node(
+        generate = build_andrea_generation_node(
             llm=self._llm,
-            prompt=get_gpt_a_prompt(),
+            prompt=get_refined_prompt(),
         )
 
         # ── Assemble graph ──────────────────────────────
-        builder = StateGraph(MessagesState)
+        builder = StateGraph(AndreaState)
 
         builder.add_node("generate", generate)
 

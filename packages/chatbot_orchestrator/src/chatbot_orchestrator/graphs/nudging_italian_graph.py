@@ -30,8 +30,7 @@ class NudgingItalianGraphBuilder(GraphBuilder):
         retriever: BaseRetriever | None = None,
         llm: BaseChatModel | None = None,
     ):
-        self._retriever = retriever
-        self._llm = llm
+        super().__init__(retriever, llm)
 
     @property
     def name(self) -> str:

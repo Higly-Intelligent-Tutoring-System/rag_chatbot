@@ -41,8 +41,10 @@ async def build_evaluation_dataset(
 
         # ── 2. Retrieve context chunks ─────────────────────────────────────────
         # retriever.ainvoke returns List[Document]; we extract .page_content
-        docs = await retriever.ainvoke(question)
-        contexts: List[str] = [doc.page_content for doc in docs]
+        contexts = []
+        if retriever:
+            docs = await retriever.ainvoke(question)
+            contexts: List[str] = [doc.page_content for doc in docs]
 
         # ── 3. Build ragas sample ──────────────────────────────────────────────
         sample = SingleTurnSample(

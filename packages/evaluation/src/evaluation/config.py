@@ -15,10 +15,10 @@ class EvalSettings(BaseSettings):
     MODEL_NAME: str
     PROVIDER_NAME: str
     MODEL_TEMPERATURE: float
-    AUTH_ENABLE: bool
+    AUTH_ENABLED: bool
     TELEMETRY_ENABLE: bool
 
-    PHOENIX_COLLECTOR_ENDPOINT: str
+    PHOENIX_COLLECTOR_DOMAIN: str
     PHOENIX_PROJECT_NAME: str
 
     SAVER_BACKEND: str

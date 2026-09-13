@@ -1,4 +1,3 @@
-# TODO: Add tool to wire to the HITS graph to retrive documents.
 from langchain_core.vectorstores import VectorStore
 from langchain.tools import tool
 

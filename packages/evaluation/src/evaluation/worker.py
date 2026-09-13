@@ -7,7 +7,7 @@ from chatbot_orchestrator import ChatService
 from chatbot_orchestrator.graphs.registry import get_graph_builder
 from evaluation.dataset_builder import build_evaluation_dataset
 from evaluation.service import EvalService
-from evaluation.metrics import FULL_METRICS  # or REFERENCE_FREE_METRICS
+from evaluation.metrics import EMPTY_METRICS  # or REFERENCE_FREE_METRICS
 from evaluation.config  import eval_settings, core_settings, datasets_dir
 
 
@@ -23,7 +23,7 @@ evaluator_llm = init_chat_model(
     )
 embeddings = get_embeddings_model(core_settings)
 vectordb  = get_vector_store(core_settings)
-retriever = vectordb.as_retriever(search_kwargs={"k": 4})
+retriever = vectordb.as_retriever(search_kwargs={"k": 4}) if vectordb else None
 
 
 async def main():
@@ -59,7 +59,7 @@ async def main():
     eval_service = EvalService(
         llm=evaluator_llm,
         embeddings=embeddings,
-        metrics=FULL_METRICS,
+        metrics=EMPTY_METRICS,
     )
 
     print("⏳ Running ragas evaluation… (this may take a few minutes)\n")
@@ -67,7 +67,7 @@ async def main():
     result = await loop.run_in_executor(None, eval_service.run, dataset)
 
     # 5. Print results -------------------------------------------------------
-    df = result.to_pandas()
+    df = dataset.to_pandas()
 
     # Identify metric columns — exclude ragas bookkeeping columns
     non_metric_cols = {
@@ -84,6 +84,8 @@ async def main():
         bar = "█" * int(score * 20)
         print(f"  {metric_name:<35} {score:.4f}  {bar}")
     print("═" * 50)
+
+    # TODO: Refactor to spawn a single thread per question and then evaluate them all, with or without metrics.
 
     # 6. Export to CSV -------------------------------------------------------
     df.to_csv("eval_results.csv", index=False)

@@ -1,0 +1,144 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg-primary: #0A192F;
+    --bg-secondary: #112240;
+    --text-primary: #E2E8F0;
+    --accent-cyan: #64FFDA;
+}
+
+/* Main container */
+.main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 !important;
+}
+
+/* Header styling */
+.header-container {
+    padding: 2rem 2rem 1rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(200, 200, 200, 0.2);
+}
+
+.header-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+
+.header-subtitle {
+    font-size: 1rem;
+    font-weight: 400;
+    color: rgba(200, 200, 200, 0.7);
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+.header-caption {
+    font-size: 0.9rem;
+    color: rgba(200, 200, 200, 0.6);
+    margin-top: 1rem;
+}
+
+/* Controls container */
+.controls-container {
+    padding: 1.5rem 2rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Selectbox styling */
+.stSelectbox {
+    flex: 1;
+    max-width: 400px;
+}
+
+.stSelectbox > div > div {
+    border-radius: 8px;
+    border: 1px solid rgba(200, 200, 200, 0.2);
+    background-color: rgba(30, 30, 46, 0.5);
+}
+
+/* Button styling */
+.stButton > button {
+    border-radius: 8px;
+    border: 1px solid rgba(200, 200, 200, 0.2);
+    background-color: rgba(50, 50, 70, 0.8);
+    color: white;
+    font-weight: 500;
+    padding: 0.5rem 1.5rem;
+    transition: all 0.2s ease;
+    height: 2.5rem;
+    white-space: nowrap;
+}
+
+.stButton > button:hover {
+    background-color: rgba(70, 70, 90, 0.9);
+    border-color: rgba(200, 200, 200, 0.4);
+    transform: translateY(-1px);
+}
+
+.stButton > button:active {
+    transform: translateY(0);
+}
+
+/* Chat container */
+.chat-container {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Message styling */
+.stChatMessage {
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 0.5rem;
+}
+
+/* User message */
+[data-testid="chatAvatarIcon-user"] {
+    font-size: 1.5rem;
+}
+
+/* Assistant message */
+[data-testid="chatAvatarIcon-assistant"] {
+    font-size: 1.5rem;
+}
+
+/* Chat input styling */
+.stChatInputContainer {
+    padding: 1.5rem 2rem 2rem 2rem;
+}
+
+.stChatInputContainer input {
+    border-radius: 20px;
+    border: 1px solid rgba(200, 200, 200, 0.2);
+    background-color: rgba(30, 30, 46, 0.5);
+    padding: 0.75rem 1.5rem;
+    color: white;
+}
+
+.stChatInputContainer input:focus {
+    border-color: rgba(100, 150, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(100, 150, 255, 0.1);
+}
+
+/* Remove default streamlit padding */
+.block-container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+/* Smooth transitions */
+* {
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}

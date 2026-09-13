@@ -28,3 +28,6 @@ CONTEXT_FREE_METRICS = [
     ResponseRelevancy(),
     FactualCorrectness(),
 ]
+
+# ── Use this set when you ONLY want the chatbot to answer ──────────────────
+EMPTY_METRICS = []

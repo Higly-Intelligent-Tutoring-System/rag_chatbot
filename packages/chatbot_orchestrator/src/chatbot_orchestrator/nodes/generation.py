@@ -103,4 +103,25 @@ def build_multiple_generation_node(llm: BaseChatModel, prompt: ChatPromptTemplat
         }
 
     return generate_multiple_turn
+
+
+def build_andrea_generation_node(llm: BaseChatModel, prompt: ChatPromptTemplate):
     
+    async def generate_multiple_turn(state):
+        context = ""
+        question = state["messages"]
+        university = state.get("university", "")
+        
+        formatted_messages = prompt.format_messages(
+            context=context,
+            question=question,
+            university=university,
+        )
+        
+        response = await llm.ainvoke(formatted_messages)
+        
+        return {
+            "messages": [AIMessage(content=response.content)]
+        }
+    
+    return generate_multiple_turn

@@ -7,12 +7,14 @@ class ChatService:
         self,
         graph_builder: GraphBuilder,
         llm,
+        university: str = "",
         retriever=None,
         checkpointer=None,
         store=None,
     ):
         self.graph_builder = graph_builder
         self.llm = llm
+        self.university = university
         self.retriever = retriever
         self.checkpointer = checkpointer
         self.store = store
@@ -38,7 +40,10 @@ class ChatService:
         }
 
         result = await self._compiled_graph.ainvoke(
-            {"messages": [{"role": "user", "content": message}]},
+            {
+                "messages": [{"role": "user", "content": message}],
+                "university": self.university  # Flows through state
+            },
             config=config,
         )
 

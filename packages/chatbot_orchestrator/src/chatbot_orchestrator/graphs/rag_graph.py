@@ -4,13 +4,15 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.retrievers import BaseRetriever
 from langgraph.graph import StateGraph, START, END
 
+from chatbot_orchestrator.graphs.base import GraphBuilder
 from chatbot_orchestrator.schemas.schemas import RagState
-from chatbot_orchestrator.nodes import *
+from chatbot_orchestrator.nodes.generation import build_single_rag_node
+from chatbot_orchestrator.nodes.retrieval import build_retrieval_node
 
 from chatbot_orchestrator.prompts.rag import get_rag_prompt
 
 
-class RAGGraphBuilder:
+class RAGGraphBuilder(GraphBuilder):
     """
     Configurable RAG graph.
 
@@ -31,8 +33,7 @@ class RAGGraphBuilder:
         retriever: BaseRetriever | None = None,
         llm: BaseChatModel | None = None,
     ):
-        self._retriever = retriever
-        self._llm = llm
+        super().__init__(retriever, llm)
 
 
     @property
