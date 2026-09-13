@@ -1,0 +1,71 @@
+name: Deploy on Tag
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate GitHub App Token
+        id: app_token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Deploy to VPS
+        run: |
+          ssh -i ~/.ssh/deploy ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          set -e
+          
+          PROJECT_PATH="/home/peasant/rag_chatbot"
+          ENVS_PATH="$PROJECT_PATH/envs"
+          # TODO: Add rconfig configuration path
+          
+          mkdir -p "$PROJECT_PATH"
+          mkdir -p "$ENVS_PATH"
+          
+          # Use the app token for git operations
+          if [ -d "$PROJECT_PATH/.git" ]; then
+            cd "$PROJECT_PATH"
+            git fetch origin
+            git checkout main
+            git pull origin main
+          else
+            git clone https://x-access-token:${{ steps.app_token.outputs.token }}@github.com/Higly-Intelligent-Tutoring-System/rag_chatbot.git "$PROJECT_PATH"
+            cd "$PROJECT_PATH"
+          fi
+          
+          # Write env files
+          # TODO: Complete with all env files
+          cat > "$ENVS_PATH/.env" << 'ENVFILE'
+          ${{ secrets.ENV_PROD }}
+          ENVFILE
+
+          # TODO: Add also the rconfig file and the users.json
+          
+          # Sync dependencies
+          uv sync --all-packages
+
+          # TODO: Execute the tool to add the users (it's idempotent, do not worry)
+          
+          # Deploy
+          docker compose -f docker-compose.prod.yml down || true
+          docker compose -f docker-compose.prod.yml up -d
+          
+          echo "Deployment completed!"
+          EOF
