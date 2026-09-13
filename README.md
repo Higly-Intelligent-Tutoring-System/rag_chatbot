@@ -1,180 +1,208 @@
 # 🤖 HITS Chatbot Monorepository
 
-Welcome to the monolithic repository for the RAG (Retrieval-Augmented Generation) Chatbot of the HITS project. This repository manages multiple Python components and a shared core library using **uv** workspaces to ensure consistent dependencies and versioning.
+Welcome to the monorepository for the HITS Retrieval-Augmented Generation (RAG)
+chatbot.
 
-## 🏗️ Architecture
+This repository contains multiple Python applications and shared packages managed as
+a single workspace with [`uv`](https://docs.astral.sh/uv/). The workspace provides
+consistent dependency management and versioning across the project.
 
-The project is structured as a Monorepo with the following components:
+## Documentation
+
+- [Project overview](docs/00_overview.md)
+- [System architecture](docs/01_system_architecture.md)
+- [Chatbot architecture](docs/02_chatbot_architecture.md)
+- [Ingestion pipeline](docs/03_ingestion_pipeline.md)
+- [User manual](docs/04_user_manual.md)
+- [Developer manual](docs/05_developer_manual.md)
+- [Operations manual](docs/06_operations_manual.md)
+- [Configuration reference](docs/07_configuration_reference.md)
+- [Troubleshooting](docs/08_troubleshooting.md)
+- [Security and privacy](docs/09_security_and_privacy.md)
+- [Glossary](docs/10_glossary.md)
+
+## Features
+
+- Retrieval-Augmented Generation chatbot
+- Shared Python packages
+- Workspace-wide dependency management with `uv`
+- Containerized development environment
+- Support for local and remote language-model providers
+- Document ingestion and processing
+- Semantic search and retrieval
+
+## ⚡ Prerequisites
+
+The following tools are required for local development:
+
+- Python 3.13 or later
+- `uv`
+- Podman and `podman compose`, or Docker and Docker Compose
+
+For local development, Ollama is recommended as a language-model provider. It allows
+developers to run a local model without consuming tokens from a paid remote provider.
+
+### Installing `uv`
+
+#### macOS and Linux
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+#### Windows PowerShell
+
+```powershell
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+Additional requirements are documented in the
+[developer manual](docs/05_developer_manual.md).
+
+## 🚀 Setup and installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/<organization>/<repository>.git
+cd <repository>
+```
+
+### 2. Create the local environment file
+
+Create a local environment file from the provided template:
+
+```bash
+cp .env.dist .env
+```
+
+Review the generated `.env` file and provide the required values.
+
+See the [configuration reference](docs/07_configuration_reference.md) for a
+description of the available settings.
+
+> **Important:** Do not commit `.env` or any file containing secrets.
+
+### 3. Start the development environment
+
+Using Podman:
+
+```bash
+podman compose -f docker-compose.dev.yml up
+```
+
+Using Docker:
+
+```bash
+docker compose -f docker-compose.dev.yml up
+```
+
+To stop the environment when using Podman:
+
+```bash
+podman compose -f docker-compose.dev.yml down
+```
+
+When using Docker, replace `podman` with `docker`:
+
+```bash
+docker compose -f docker-compose.dev.yml down
+```
+
+### 4. Verify the installation
+
+Once the services are running, verify the system using the configured health-check
+endpoint or application URL.
+
+See the [operations manual](docs/06_operations_manual.md) for service URLs and
+health-check procedures.
+
+## Running without containers
+
+The project can also be run directly from the host machine.
+
+Synchronize all workspace packages and dependencies:
+
+```bash
+uv sync --all-packages
+```
+
+Instructions for starting individual services are available in the
+[developer manual](docs/05_developer_manual.md).
+
+## Repository structure
 
 ```text
-rag-monorepo/
+rag-chatbot/
 ├── packages/
 │   ├── core/                   # 🧠 Shared Library (Config, Database, Embeddings)
 │   ├── document-loader/        # 📥 CLI Tool for Data Ingestion (Web & PDF)
 │   ├── chatbot_orchestration/  # 🤖 Application layer (Chatbot engine)
 │   ├── api/                    # ✉️ FastAPI Backend
 │   ├── ui/                     # 🎓 Streamlit UI
-│   └── evaluation/             # 📐 RAGAS evaluation engine
+│   ├── evaluation/             # 📐 RAGAS evaluation engine
+│   └── infrastructure/         # 🏛️ Ansible configurations
 │
 ├── pyproject.toml              # Workspace Definition
 ├── uv.lock                     # Unified Lockfile
 ├── .env.dist                   # Environment template
 └── ...                         # Other Configuration and Documentation
-```
 
-## ⚡ Prerequisites
+The exact responsibilities of each package are described in the
+[project overview](docs/00_overview.md).
 
-- **Python**: 3.13 or higher
-- **uv**: An extremely fast Python package installer and resolver.
-  ```bash
-  # Install uv (macOS/Linux)
-  curl -LsSf https://astral.sh/uv/install.sh | sh
-  
-  # Install uv (Windows)
-  powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
-  ```
-- **podman**: OCI compliant tool to manage containers (alternative to `docker`, this one can be used as well). It requires `podman-compose` (e.q. `docker-compose`) as well.
+## Environment types
 
-  For developers, it is recomended to use `ollama` as the LLM provider and use a local model to avoid wasting paid tokens from any remote provider.
+The project may be used in the following environments:
 
-  Moreover, even if all the project is runnable as detailed in the dedicated section below, adding a OCI compliant tool is highly suggested due to future deployment.
+- **Development:** Used for feature development and testing.
+- **Staging:** Used for integration testing and final validation.
+- **Production:** Used to run the final deployed system.
 
+Environment-specific configuration and deployment procedures are documented in the
+[operations manual](docs/06_operations_manual.md).
 
-## 🚀 Setup & Installation
+## Development commands
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-org/rag-chatbot.git
-    cd rag-chatbot
-    ```
+Install all workspace dependencies:
 
-2.  **Environment Configuration:**
-    Create your local configuration file from the template.
-    ```bash
-    cp .env.dist .env
-    ```
-
-    Ideally up to 3 environments can be made:
-    - **Developement (.dev)**: Confined to feature implementation and testing.
-    - **Staging (.stg)**: Polished environment containing configuration for service separation at container level.
-    - **Production (.prod)**: Final environment to be deplouyed, must be always valid.
-
-    But in practice is important that it meets the needs of the moment.
-
-3. **Start everything**
-    You can use the instructions inside each readme or just excute:
-    ```bash
-    podman compose -f docker-compose.yml up
-    ```
-
-If, by any chance, you do prefer spinning up every service from your machine without containers you can do it by syncing the workspace:
 ```bash
 uv sync --all-packages
 ```
 
-
-## 📦 Packages Overview
-
-**NOTE**: This is only a brief overview of the packages, please refer to the README.md you will find inside of each package for detailed documentation.
-
-### 1. 🧠 Core (`packages/core`)
-The foundation of the ecosystem. It is not an application itself but a library used by all other services.
-
-*   **Responsibility**:
-    *   **Configuration**: Manages Pydantic Settings and reads `.env`.
-    *   **VectorDB Factory**: Provides a unified interface to get `Chroma` or `Supabase` clients.
-    *   **Embeddings**: Centralizes the Embedding Model definition to ensure consistency between ingestion and retrieval.
-
-### 2. 📥 Document Loader (`packages/document-loader`)
-A Command Line Interface (CLI) tool responsible for populating the Vector Database.
-
-*   **Features**:
-    *   Recursive Web Crawling.
-    *   PDF Text Extraction.
-    *   Smart Chunking (rules defined in `core`).
-    *   Batch processing.
-
-*   **Usage**:
-    ```bash
-    # Crawl a website
-    uv run --package document-loader python -m loader.main web "https://example.com"
-    
-    # Load a PDF
-    uv run --package document-loader python -m loader.main pdf "./docs/manual.pdf"
-    ```
-
-    Check document_loader's `README.md` to know how to enable batch processing.
-
-### 3. 🤖 Chatbot orchestrartor (`packages/chatbot_orchestrartor`)
-
-The application layer of the HITS RAG chatbot.
-
-This package contains the LangGraph-based conversational engine responsible for retrieval, generation, and conversation memory management. It is framework‑agnostic and designed to be consumed by the api package.
-
-
-### 4. ✉️ FastAPI Backend (`packages/api`)
-
-The web server layer of the HITS RAG chatbot.
-
-This package exposes the framework-agnostic `chatbot_orchestrator` through RESTful HTTP endpoints using FastAPI. It acts as the bridge between client applications (UIs, external services) and the core conversational engine.
-
-**Features**:
-- **REST Endpoints**: Exposes the primary /chat endpoint for conversation and /liveness for infrastructure health checks.
-- **Lifespan Management**: Safely handles application startup and shutdown, wiring the ChatService into the server state.
-- **Observability**: Automatically initializes OpenTelemetry (e.g., Phoenix/Jaeger) tracing during server startup.
-- **Data Validation**: Uses strict Pydantic models to validate incoming requests (e.g., preventing empty messages) and format responses.
-
-Check the api's `README.md` for detailed usage documentation.
-
-
-### 5. 🎓 Streamlit UI Package (`packages/ui`)
-
-This package serves as the frontend layer of the smart tutoring system. It handles all user interactions, displays the conversational history, renders educational content (including code and math equations), and communicates with the backend tutoring engine (LLMs, RAG models, etc.) to generate personalized responses.
-
-
-### 6. 📐 RAGAS evaluation engine (`packages/evaluation`)
-
-Testing logic for the retrival and generation phases of the inference pipeline.
-This package implements the RAGAS framework to evaluate overall application performance over the desired target responses it should ideally give out.
-
-Most of the metrics implemented rely on the LLM-as-a-judge paradigm, therefore they are not deterministic and should not be interpreted as if they were.
-These represent a useful benchmark to speed up the process by looking at the overall tendency of the system instead of single cases.
-
-It should be kept in mind that this is a time-intensive procedure to apply and should not be abused in cost-sensitive environments.
-The effectiveness of the tests are directly correlated to the capabilities of the LLM chosen as the judge.
-Some tests will fail using a small local model, a way more advanced provider as OpenAI, Gemini or Claude is sincerely suggested.
-
-Check the package's `README.md` for detailed documentation over the applied metrics.
-
-
-## 🛠️ Development Workflow
-
-### Running Tests
-You can run tests for the entire monorepo or specific packages.
+Run the test suite:
 
 ```bash
-# Run ALL tests
 uv run pytest
-
-# Run tests for a specific package
-uv run --package document-loader pytest
 ```
 
-### Adding Dependencies
-Because this is a workspace, you must specify which package receives the dependency.
-In the examples below you will be guided to add a dependency only to the required one.
+Replace `<type-checker>` with the type-checking tool used by the project.
 
-```bash
-# Add 'pandas' to the document-loader only
-uv add pandas --package document-loader
+## Troubleshooting
 
-# Add 'httpx' to the shared core library
-uv add httpx --package core
-```
+If the project does not start correctly, consult the
+[troubleshooting guide](docs/08_troubleshooting.md).
 
-In case you added one by mistake, you can remove it by typing:
+Common causes include:
 
-```bash
-# Removes 'pandas' to the document-loader only
-uv remove <lib> --package <package>
-```
+- Missing environment variables
+- An unavailable container engine
+- A port conflict
+- An unavailable language-model provider
+- A missing Ollama model
+- A service dependency that has not started
+- Incorrect workspace configuration
+
+## Contributing
+
+Before submitting changes:
+
+1. Install the project dependencies.
+2. Run the test suite.
+3. Run linting and formatting checks.
+4. Run type checks, if configured.
+5. Update the documentation when behavior or configuration changes.
+6. Keep secrets and environment-specific configuration out of version control.
+
+Detailed development instructions are available in the
+[developer manual](docs/05_developer_manual.md).
