@@ -3,6 +3,10 @@
 }
 
 hits-chatbot.duckdns.org {
+  tls {
+    dns duckdns {env.DUCKDNS_API_TOKEN}
+  }
+  
   handle /api/ita/* {
     uri strip_prefix /api/ita
     reverse_proxy api:8000
@@ -34,6 +38,10 @@ hits-chatbot.duckdns.org {
 }
 
 hits-telemetry.duckdns.org {
+  tls {
+    dns duckdns {env.DUCKDNS_API_TOKEN}
+  }
+
   basic_auth {
         smoothoperator {env.AUTH_HASH}
   }
@@ -42,13 +50,13 @@ hits-telemetry.duckdns.org {
 }
 
 hits-status.duckdns.org {
+  tls {
+    dns duckdns {env.DUCKDNS_API_TOKEN}
+  }
+
   basic_auth {
     smoothoperator {env.AUTH_HASH}
   }
 
   reverse_proxy uptime-kuma:3001
-}
-
-tls {
-	dns duckdns {env.DUCKDNS_API_TOKEN}
 }
