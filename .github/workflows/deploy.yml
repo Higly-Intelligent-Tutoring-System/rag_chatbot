@@ -34,38 +34,73 @@ jobs:
           
           PROJECT_PATH="/home/peasant/rag_chatbot"
           ENVS_PATH="$PROJECT_PATH/envs"
-          # TODO: Add rconfig configuration path
-          
-          mkdir -p "$PROJECT_PATH"
-          mkdir -p "$ENVS_PATH"
+          RCLONE_PATH="$PROJECT_PATH/rclone"
           
           # Use the app token for git operations
-          if [ -d "$PROJECT_PATH/.git" ]; then
-            cd "$PROJECT_PATH"
-            git fetch origin
-            git checkout main
-            git pull origin main
-          else
-            git clone https://x-access-token:${{ steps.app_token.outputs.token }}@github.com/Higly-Intelligent-Tutoring-System/rag_chatbot.git "$PROJECT_PATH"
-            cd "$PROJECT_PATH"
-          fi
+          # Delete and clone fresh with the app token
+          rm -rf "$PROJECT_PATH"
+          git clone https://x-access-token:${{ steps.app_token.outputs.token }}@github.com/Higly-Intelligent-Tutoring-System/rag_chatbot.git "$PROJECT_PATH"
+          cd "$PROJECT_PATH"
           
           # Write env files
-          # TODO: Complete with all env files
-          cat > "$ENVS_PATH/.env" << 'ENVFILE'
-          ${{ secrets.ENV_PROD }}
+          cat > "$ENVS_PATH/.env.prod.ita" << 'ENVFILE'
+          ${{ secrets.ENV_ITA }}
           ENVFILE
 
-          # TODO: Add also the rconfig file and the users.json
+          cat > "$ENVS_PATH/.env.prod.slo" << 'ENVFILE'
+          ${{ secrets.ENV_SLO }}
+          ENVFILE
+
+          cat > "$ENVS_PATH/.env.prod.esp" << 'ENVFILE'
+          ${{ secrets.ENV_ESP }}
+          ENVFILE
+
+          cat > "$ENVS_PATH/.env.prod.rou" << 'ENVFILE'
+          ${{ secrets.ENV_ROU }}
+          ENVFILE
+
+          cat > "$ENVS_PATH/.env.prod.ltu" << 'ENVFILE'
+          ${{ secrets.ENV_LTU }}
+          ENVFILE
+
+          cat > "$ENVS_PATH/postgres.env" << 'ENVFILE'
+          ${{ secrets.ENV_POSTGRES }}
+          ENVFILE
+          
+          cat > "$ENVS_PATH/phoenix.env" << 'ENVFILE'
+          ${{ secrets.ENV_PHOENIX }}
+          ENVFILE
+
+          cat > "$ENVS_PATH/caddy.env" << 'ENVFILE'
+          ${{ secrets.ENV_CADDY }}
+          ENVFILE
+
+          cat > "$ENVS_PATH/pg_backup.env" << 'ENVFILE'
+          ${{ secrets.ENV_PG_BACKUP }}
+          ENVFILE
+
+          # Writing the users.json file
+          cat > "$PROJECT_PATH/users.json" << 'USERS_EOF'
+          ${{ secrets.CHATBOT_USERS }}
+          USERS_EOF
+
+          # Write rclone config
+          cat > "$RCLONE_PATH/rclone.conf" << 'RCLONE_EOF'
+          ${{ secrets.RCLONE_DROPBOX }}
+          RCLONE_EOF
           
           # Sync dependencies
           uv sync --all-packages
-
-          # TODO: Execute the tool to add the users (it's idempotent, do not worry)
           
           # Deploy
           docker compose -f docker-compose.prod.yml down || true
           docker compose -f docker-compose.prod.yml up -d
+
+          # Wait 20 seconds for database to be ready
+          sleep 20
+
+          # Execute the user tool
+          (export $(cat envs/.env.prod.ita | xargs) && uv run python -m api.tools.add_users --database-url "${{ secrets.DB_URI_USER_TOOL }}" --users-file "./users.json")
           
           echo "Deployment completed!"
           EOF
