@@ -5,20 +5,20 @@ services:
     image: postgres:17
     restart: always
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
     env_file:
-      - envs/infrastructure.env
+      - envs/postgres.env
   phoenix:
-    image: arizephoenix/phoenix:latest
+    image: docker.io/arizephoenix/phoenix:20.8
     depends_on:
       - db
     ports:
       - "6006:6006"  # UI and OTLP HTTP collector
       - "4317:4317"  # OTLP gRPC collector
     env_file:
-      - envs/infrastructure.env
+      - envs/phoenix.env
 
   api:
     build:
@@ -39,7 +39,7 @@ services:
     ports:
       - "8000:8000"
   ui:
-    image: localhost/rag_chatbot_ui:0.1.0
+    image: localhost/rag_chatbot_ui:latest
     restart: always
     depends_on:
       - api

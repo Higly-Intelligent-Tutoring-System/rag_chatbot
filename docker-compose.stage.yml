@@ -49,7 +49,7 @@ services:
       retries: 20
       start_period: 10s
   phoenix:
-    image: arizephoenix/phoenix:latest
+    image: docker.io/arizephoenix/phoenix:20.8
     ports:
       - "127.0.0.1:6006:6006"
     depends_on:

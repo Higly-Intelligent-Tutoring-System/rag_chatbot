@@ -41,7 +41,7 @@ def authenticate(username: str, password: str) -> tuple[bool, str]:
         return False, "Invalid username or password."
 
     if response.status_code != 200:
-        return False, f"Login failed with status {response.status_code}, {response.json()}."
+        return False, f"Login failed with status {response.status_code}."
 
     try:
         token_data = response.json()
