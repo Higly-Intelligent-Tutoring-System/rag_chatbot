@@ -1,5 +1,3 @@
-version: "3.9"
-
 x-api-base: &api_base
   image: rag_chatbot_api:latest
   build:
@@ -78,6 +76,7 @@ services:
       - envs/phoenix.env
     networks:
       - business_net
+      - edge_net
   api:
     <<: *api_base
     env_file:
@@ -121,8 +120,9 @@ services:
       - "8501"
     environment:
       UI_API_DOMAIN: hits-chatbot.duckdns.org
-      UI_API_PORT: 8080
-      UI_API_ENCRYPTION: True
+      UI_API_PORT: 443
+      UI_API_AUTH: True
+      UI_API_OVER_TLS: True
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
       interval: 30s

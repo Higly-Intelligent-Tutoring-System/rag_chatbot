@@ -74,7 +74,7 @@ def render_controls() -> None:
         )
 
     logout_clicked = False
-    if ui_settings.API_ENCRYPTION:
+    if ui_settings.API_AUTH:
         with col3:
             logout_clicked = st.button(
                 "Logout",

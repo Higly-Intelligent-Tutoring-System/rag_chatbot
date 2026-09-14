@@ -37,7 +37,7 @@ with open("src/ui/styles/main.css") as css_file:
 # Authentication gate
 # -----------------------------------------------------------------------------
 
-require_login() if ui_settings.API_ENCRYPTION else ""
+require_login() if ui_settings.API_AUTH else ""
 
 
 # -----------------------------------------------------------------------------

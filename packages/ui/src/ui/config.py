@@ -8,8 +8,9 @@ class UiSettings(BaseSettings):
 
     API_DOMAIN: str
     API_PORT: int
-    API_ENCRYPTION: bool
-
+    API_AUTH: bool
+    API_OVER_TLS: bool
+    
     def api_url(self, university: str | None = None, encryption: bool = False) -> str:
         """
         Generate API URL with optional university parameter.

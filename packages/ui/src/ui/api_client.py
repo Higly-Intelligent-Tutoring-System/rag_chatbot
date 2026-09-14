@@ -11,8 +11,8 @@ def post_chat(
 ) -> requests.Response:
     """Send a request to the chatbot API."""
     return requests.post(
-        url=f"{ui_settings.api_url(university_id, False)}/chat",        # No tls internal
-        headers=get_auth_headers() if ui_settings.API_ENCRYPTION else None,
+        url=f"{ui_settings.api_url(university_id, ui_settings.API_OVER_TLS)}/chat",
+        headers=get_auth_headers() if ui_settings.API_AUTH else None,
         json={
             "message": prompt,
             "thread_id": thread_id,

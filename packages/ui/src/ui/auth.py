@@ -7,7 +7,7 @@ from ui.config import ui_settings
 def token_url() -> str:
     """Return the FastAPI token endpoint URL."""
 
-    return f"{ui_settings.api_url(university=None, encryption=False)}/token"
+    return f"{ui_settings.api_url(university=None, encryption=ui_settings.API_OVER_TLS)}/token"
 
 
 def is_authenticated() -> bool:

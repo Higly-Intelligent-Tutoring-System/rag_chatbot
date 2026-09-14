@@ -96,9 +96,6 @@ jobs:
           docker compose -f docker-compose.prod.yml down || true
           docker compose -f docker-compose.prod.yml up -d
 
-          # Wait 20 seconds for database to be ready
-          sleep 20
-
           # Execute the user tool
           (export $(cat envs/.env.prod.ita | xargs) && uv run python -m api.tools.add_users --database-url "${{ secrets.DB_URI_USER_TOOL }}" --users-file "./users.json")
           
