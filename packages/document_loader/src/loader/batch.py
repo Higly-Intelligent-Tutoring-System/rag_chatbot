@@ -69,7 +69,7 @@ def run_pdf_batch(folder_path) -> list[list[Element]]:
 
 def main():
     process_and_store(
-        #run_web_batch(document_loader_settings.URL_PATH) +
+        run_web_batch(document_loader_settings.URL_PATH) +
         run_pdf_batch(document_loader_settings.PDF_PATH)
     )
 
