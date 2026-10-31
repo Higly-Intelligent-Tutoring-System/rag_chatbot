@@ -14,3 +14,5 @@ class CoreSettings(BaseSettings):
     EMBEDDING_MODEL_NAME: str # = "sentence-transformers/all-MiniLM-L6-v2"
     EMBEDDING_MODEL_PROVIDER: str # = "huggingface"
     CACHE_FOLDER: str # = "./model_cache"
+
+    # TODO: Introduce a SparseRetriver Interface -> Implement in-memory (tantivy-py, rank-bm25) and distributed (opensearch) BM25 search

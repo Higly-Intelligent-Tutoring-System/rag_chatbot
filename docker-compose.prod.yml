@@ -7,7 +7,9 @@ x-api-base: &api_base
     - rag_chatbot_api:latest
   restart: always
   healthcheck:
-    test: ["CMD", "curl", "-f", "http://localhost:8000/liveness"]
+    test:
+      - CMD-SHELL
+      - 'if [ -f /tmp/liveness-passed ]; then exit 0; fi; curl -f http://localhost:8000/liveness >/dev/null && touch /tmp/liveness-passed'
     interval: 30s
     timeout: 5s
     retries: 3

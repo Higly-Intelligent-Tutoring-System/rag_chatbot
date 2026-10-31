@@ -1,5 +1,5 @@
 x-api-base: &api_base
-  image: rag_chatbot_api:latest
+  image: rag_chatbot_api:1.0.0
   build:
     context: .
     dockerfile: docker/Dockerfile.api

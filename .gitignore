@@ -212,10 +212,10 @@ chroma*/
 model_cache/
 
 # Ignore actual PDF binaries to keep repo small
-data/pdf_docs/*.pdf
-data/pdf_docs/*.md
-data/pdf_docs/*.docx
-data/pdf_docs/*.doc
+data/docs_for_ingestion/*.pdf
+data/docs_for_ingestion/*.md
+data/docs_for_ingestion/*.docx
+data/docs_for_ingestion/*.doc
 data/all_docs
 *.pdf
 
