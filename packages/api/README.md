@@ -113,6 +113,8 @@ From the repository root:
 (export $(cat envs/.env.dev | xargs) && uv run --package api uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload)
 ```
 
+**NOTE**: You need to [configure](../../docs/07_configuration_reference.md) the env file accordignly before executing the command. This stands for every command that needs to have an `export` before it.
+
 It is important to export the developement environment before launching the webserver because all the configuration is propagated top-down from the API package.
 
 By default, the app will be available at:
@@ -261,5 +263,3 @@ This avoids initializing or calling real LLM infrastructure during endpoint test
 ## Status
 
 This package is functional and provides the current HTTP interface for the chatbot, but it is expected to evolve as the API surface and deployment requirements grow.
-
-# TODO: Check and rewrite all the docs before the last production commit

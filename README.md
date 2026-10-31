@@ -11,8 +11,8 @@ consistent dependency management and versioning across the project.
 
 - [Project overview](docs/00_overview.md)
 - [System architecture](docs/01_system_architecture.md)
-- [Chatbot architecture](docs/02_chatbot_architecture.md)
-- [Ingestion pipeline](docs/03_ingestion_pipeline.md)
+- [Ingestion pipeline](docs/02_ingestion_pipeline.md)
+- [Chatbot architecture](docs/03_chatbot_architecture.md)
 - [User manual](docs/04_user_manual.md)
 - [Developer manual](docs/05_developer_manual.md)
 - [Operations manual](docs/06_operations_manual.md)
@@ -91,31 +91,18 @@ Using Podman:
 podman compose -f docker-compose.dev.yml up
 ```
 
-Using Docker:
-
-```bash
-docker compose -f docker-compose.dev.yml up
-```
-
 To stop the environment when using Podman:
 
 ```bash
 podman compose -f docker-compose.dev.yml down
 ```
 
-When using Docker, replace `podman` with `docker`:
-
-```bash
-docker compose -f docker-compose.dev.yml down
-```
+When using Docker, replace `podman` with `docker`.
 
 ### 4. Verify the installation
 
-Once the services are running, verify the system using the configured health-check
-endpoint or application URL.
+Once the installation is completed, you should be able to access the services on your `http://localhost:\<port\>` combination. Look at the ones inside the compose file you started to discover their precise local address.
 
-See the [operations manual](docs/06_operations_manual.md) for service URLs and
-health-check procedures.
 
 ## Running without containers
 
@@ -127,8 +114,7 @@ Synchronize all workspace packages and dependencies:
 uv sync --all-packages
 ```
 
-Instructions for starting individual services are available in the
-[developer manual](docs/05_developer_manual.md).
+Instructions for starting individual services are available in the various READMEs you can find inside of each package.
 
 ## Repository structure
 
@@ -148,8 +134,7 @@ rag-chatbot/
 ├── .env.dist                   # Environment template
 └── ...                         # Other Configuration and Documentation
 
-The exact responsibilities of each package are described in the
-[project overview](docs/00_overview.md).
+The exact responsibilities of each package are described in the [project overview].
 
 ## Environment types
 
@@ -158,9 +143,6 @@ The project may be used in the following environments:
 - **Development:** Used for feature development and testing.
 - **Staging:** Used for integration testing and final validation.
 - **Production:** Used to run the final deployed system.
-
-Environment-specific configuration and deployment procedures are documented in the
-[operations manual](docs/06_operations_manual.md).
 
 ## Development commands
 
@@ -176,14 +158,9 @@ Run the test suite:
 uv run pytest
 ```
 
-Replace `<type-checker>` with the type-checking tool used by the project.
-
 ## Troubleshooting
 
-If the project does not start correctly, consult the
-[troubleshooting guide](docs/08_troubleshooting.md).
-
-Common causes include:
+Check for:
 
 - Missing environment variables
 - An unavailable container engine
@@ -192,17 +169,3 @@ Common causes include:
 - A missing Ollama model
 - A service dependency that has not started
 - Incorrect workspace configuration
-
-## Contributing
-
-Before submitting changes:
-
-1. Install the project dependencies.
-2. Run the test suite.
-3. Run linting and formatting checks.
-4. Run type checks, if configured.
-5. Update the documentation when behavior or configuration changes.
-6. Keep secrets and environment-specific configuration out of version control.
-
-Detailed development instructions are available in the
-[developer manual](docs/05_developer_manual.md).

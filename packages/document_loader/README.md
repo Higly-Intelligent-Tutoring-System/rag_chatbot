@@ -8,7 +8,7 @@ It relies on the `core` package for database connections and embedding models.
 
 - **Web Crawler**: Recursively crawls websites (respecting domain boundaries).
 - **PDF Loader**: Extracts text from PDF files.
-- **Smart Chunking**: Uses `RecursiveCharacterTextSplitter` with settings from `core`.
+- **Smart Chunking**: Uses strcture aware chunking from [Unstructured](https://unstructured.io/).
 - **Abstracted Storage**: Uploads to ChromaDB or Supabase (depending on `core`).
 
 ## 🚀 Usage
@@ -19,8 +19,10 @@ Run the loader from the **root** of the monorepo using `uv`.
 
 To analyze a single source use the following command:
 ```bash
-uv run --package document_loader python -m loader.main [MODE] "[TARGET]"
+(export $(cat envs/.env.dev | xargs) && uv run --package document_loader python -m loader.main [MODE] "[TARGET]")
 ```
+
+**NOTE**: You need to [configure](../../docs/07_configuration_reference.md) the env file accordignly before executing the command. This stands for every command that needs to have an `export` before it.
 
 ## 📦 Batch Data Ingestion
 
@@ -32,8 +34,8 @@ Ensure your project root contains a `data` folder with the following structure:
 ```text
 rag-monorepo/
 ├── data/
-│   ├── urls.txt          # List of URLs (one per line)
-│   └── pdf_docs/         # Folder containing .pdf files
+│   ├── urls.txt                    # List of URLs (one per line)
+│   └── docs_for_ingestion/         # Folder containing .pdf files
 ```
 
 Put in the file a url to parse recursively for each line and all the desired pdfs in the folder, then execute the following command:
@@ -67,3 +69,11 @@ To add support for a new format (e.g., Markdown):
 2. Implement a function that returns a list of Document objects.
 3. Expose it in `src/loader/sources/__init__.py`.
 4. Update `src/loader/main.py` to handle the new mode.
+
+## Using OpenAI responses API VectorStores
+
+Use this command to ingest for the OpenAI mode:
+
+```bash
+(export $(cat envs/.env.dev | xargs) && uv run --package document_loader python -m loader.packages/document_loader/src/loader/responses_autoingestion.py [--vs_id <id>])
+```
